@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">HarshJelly Tweaker</string>
+    <string name="crt_animation">CRT Animation</string>
+    <string name="killer">Long Press Back to Kill</string>
+    <string name="aosp_vib">AOSP Lock Vibration</string>
+    <string name="aosp_oriet">LockScreen Rotation</string>
+    <string name="ascend_ring">Ascending Ringtone</string>
+    <string name="info">About</string>
+    <string name="rom">HarshJelly ROM</string>
+    <string name="info_1">Tweaker</string>
+    <string name="info_2">1.0</string>
+    <string name="harshjelly_tweaker">HarshJelly Tweaker</string>
+    <string name="harsh_panchal_mr_harsh_xda_develoers_com_">Harsh Panchal (mr.harsh@xda-develoers.com)</string>
+    <string name="author">Developer:</string>
+
+</resources>

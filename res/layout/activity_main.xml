@@ -1,0 +1,43 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" 
+ android:layout_height="wrap_content"
+ android:layout_width="fill_parent">
+
+<LinearLayout
+ android:layout_height="wrap_content"
+ android:layout_width="fill_parent"
+ android:isScrollContainer="true"
+ android:orientation="vertical">
+
+    <Switch
+        android:id="@+id/s_crt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/crt_animation" />
+
+    <Switch
+        android:id="@+id/s_killer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/killer" />
+
+    <Switch
+        android:id="@+id/s_vib"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/aosp_vib" />
+
+    <Switch
+        android:id="@+id/s_oriet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/aosp_oriet" />
+    
+    <Switch
+        android:id="@+id/s_ascendring"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/ascend_ring" />
+
+</LinearLayout>
+
+</ScrollView>
