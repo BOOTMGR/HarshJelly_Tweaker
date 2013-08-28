@@ -37,6 +37,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/ascend_ring" />
+    
+    <Switch
+        android:id="@+id/s_logger"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/log" />
 
 </LinearLayout>
 

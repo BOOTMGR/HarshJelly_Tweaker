@@ -29,6 +29,7 @@ public class MainActivity extends Activity {
 	private static final String ASCEND_RING = "harsh_ascend_ring";
 	private static final String FBDELAY = "/sys/module/fbearlysuspend/parameters/fbdelay";
 	private static final String FBDELAY_MS = "/sys/module/fbearlysuspend/parameters/fbdelay_ms";
+	private static final String LOGGER = "/data/logger";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,11 +40,13 @@ public class MainActivity extends Activity {
         Switch aosp_vib = (Switch) findViewById(R.id.s_vib);
         Switch aosp_oriet = (Switch) findViewById(R.id.s_oriet);
         Switch ascend_ring = (Switch) findViewById(R.id.s_ascendring);
+        Switch logger = (Switch) findViewById(R.id.s_logger);
         int crt = Settings.System.getInt(getContentResolver(),CRT_ANIM, 0);
         int Killer = Settings.System.getInt(getContentResolver(),KILLER, 0);
         int AOSP_VIB = Settings.System.getInt(getContentResolver(),AOSP_VIBRATION, 0);
         int AOSP_ROT = Settings.System.getInt(getContentResolver(),AOSP_ROTATION, 0);
         int ringer = Settings.System.getInt(getContentResolver(),ASCEND_RING, 0);
+        final File log_enable = new File(LOGGER);
         if(crt==0){
         	crt_anim.setChecked(false);
         }else{
@@ -69,6 +72,11 @@ public class MainActivity extends Activity {
         }else{
         	ascend_ring.setChecked(true);
         }
+        if(log_enable.exists()){
+        	logger.setChecked(true);
+        }else{
+        	logger.setChecked(false);
+        }
 	        crt_anim.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 		        @Override
 		        public void onCheckedChanged(CompoundButton buttonView,
@@ -77,25 +85,33 @@ public class MainActivity extends Activity {
 			        		Settings.System.putInt(getContentResolver(), CRT_ANIM,1);
 			        		Log.d("harsh_debug","harsh_crt=>1");
 			        		try {
-								Runtime.getRuntime().exec(new String[] { "su", "-c", "echo 1 > ", FBDELAY });
-								Runtime.getRuntime().exec(new String[] { "su", "-c", "echo 350 > ", FBDELAY_MS });
+			        			Process p = Runtime.getRuntime().exec(new String[] { "su", "-c", "echo 1 > ", FBDELAY });
+			        			p.waitFor();
+								p = Runtime.getRuntime().exec(new String[] { "su", "-c", "echo 350 > ", FBDELAY_MS });
+								p.waitFor();
 								mountSystemRW();
 								copyAssets("03_crt");
 							} catch (IOException e) {
 								Toast.makeText(getApplicationContext(), "No SU Rights", Toast.LENGTH_SHORT).show();
 								Log.e("harsh_debug","Failed to get SU Rights or Unsupported Kernel");
+							} catch (InterruptedException e) {
+								e.printStackTrace();
 							}
 			        	} else {
 			        		Settings.System.putInt(getContentResolver(), CRT_ANIM,0);
 			        		Log.d("harsh_debug","harsh_crt=>0");
 			        		try {
-			        			Runtime.getRuntime().exec(new String[] { "su", "-c", "echo 0 > ", FBDELAY });
-			        			Runtime.getRuntime().exec(new String[] { "su", "-c", "echo 0 > ", FBDELAY_MS });
+			        			Process p = Runtime.getRuntime().exec(new String[] { "su", "-c", "echo 0 > ", FBDELAY });
+			        			p.waitFor();
+			        			p = Runtime.getRuntime().exec(new String[] { "su", "-c", "echo 0 > ", FBDELAY_MS });
+			        			p.waitFor();
 			        			mountSystemRW();
 			        			copyAssets("99_crtoff");
 							} catch (IOException e) {
 								Toast.makeText(getApplicationContext(), "No SU Rights or Unsupported Kernel", Toast.LENGTH_SHORT).show();
 								Log.e("harsh_debug","Failed to get SU Rights or Unsupported Kernel");
+							} catch (InterruptedException e) {
+								e.printStackTrace();
 							} 
 			        	}
 		        }
@@ -156,6 +172,31 @@ public class MainActivity extends Activity {
 			        	}
 		        }
 	        });
+	        
+	        logger.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+		        @Override
+		        public void onCheckedChanged(CompoundButton buttonView,
+		        boolean isChecked) {
+			        	if (isChecked) {
+			        		try {
+			        			Process p = Runtime.getRuntime().exec(new String[] {"su","-c","touch",LOGGER});
+			        			p.waitFor();
+			                    Runtime.getRuntime().exec(new String[] {"su","-c","chmod","777",LOGGER});
+			                } catch (Exception e) {  
+			                	Log.e("harsh_debug","Failed to create logger", e);
+			                }
+			        		Log.d("harsh_debug","logger enabled");
+			        	} else {
+			        		try {
+			        			Process p = Runtime.getRuntime().exec(new String[] {"su","-c","rm",LOGGER});
+			        			p.waitFor();
+							} catch (Exception e) {
+								Log.e("harsh_debug","Failed to remove logger", e);
+							}
+			        		Log.d("harsh_debug","logger disabled");
+			        	}
+		        }
+	        });
     }
     
     @Override
@@ -192,24 +233,34 @@ public class MainActivity extends Activity {
                 Log.e("harsh_debug", "Failed to handle: " + script, e);
             }
             try {
-				Runtime.getRuntime().exec(new String[] { "su", "-c", "cp", Environment.getExternalStorageDirectory().getPath()+"/"+script, "/system/etc/init.d/"+script });
-				Runtime.getRuntime().exec(new String[] { "su", "-c", "rm", Environment.getExternalStorageDirectory().getPath()+"/"+script });
+            	Process p = Runtime.getRuntime().exec(new String[] { "su", "-c", "cp", Environment.getExternalStorageDirectory().getPath()+"/"+script, "/system/etc/init.d/"+script });
+            	p.waitFor();
+				p = Runtime.getRuntime().exec(new String[] { "su", "-c", "rm", Environment.getExternalStorageDirectory().getPath()+"/"+script });
+				p.waitFor();
 			} catch (IOException e) {
 				Log.e("harsh_debug", "Failed to move: " + script, e);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
             if(script=="03_crt" || script=="99_crtoff"){ 
             	if(script=="03_crt") {
             		try {
-						Runtime.getRuntime().exec(new String[] { "su", "-c", "rm", "/system/etc/init.d/99_crtoff" });
+            			Process p = Runtime.getRuntime().exec(new String[] { "su", "-c", "rm", "/system/etc/init.d/99_crtoff" });
+            			p.waitFor();
 					} catch (IOException e) {
 						Log.e("harsh_debug", "Failed to remove: " + script, e);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
 					}
             	}
             	else {
             		try {
-						Runtime.getRuntime().exec(new String[] { "su", "-c", "rm", "/system/etc/init.d/03_crt" });
+            			Process p = Runtime.getRuntime().exec(new String[] { "su", "-c", "rm", "/system/etc/init.d/03_crt" });
+            			p.waitFor();
 					} catch (IOException e) {
 						Log.e("harsh_debug", "Failed to remove: " + script, e);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
 					}
             	}
             }
