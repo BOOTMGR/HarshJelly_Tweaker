@@ -31,19 +31,26 @@ public class MainActivity extends Activity {
 	private static final String FBDELAY = "/sys/module/fbearlysuspend/parameters/fbdelay";
 	private static final String FBDELAY_MS = "/sys/module/fbearlysuspend/parameters/fbdelay_ms";
 	private static final String LOGGER = "/data/logger";
+    private static final String SYSCTL1 = "/system/etc";
+    private static final String INITD = "/system/etc/init.d";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Log.i("harsh_debug","===========HarshJelly Tweaker Launched===========");
         SetCRTListner();
         SetKillerListner();
         SetAOSPVibListner();
         SetAOSPOrientListner();
         SetRingerListner();
         SetLoggerListner();
+        SetSysctlListner();
+        SetSysctlListner();
     }
-    
+
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
@@ -77,7 +84,7 @@ public class MainActivity extends Activity {
                         p = Runtime.getRuntime().exec(new String[] { "su", "-c", "echo 350 > ", FBDELAY_MS });
                         p.waitFor();
                         mountSystemRW();
-                        copyAssets("03_crt");
+                        copyAssets("03_crt",INITD);
                     } catch (IOException e) {
                         Toast.makeText(getApplicationContext(), "No SU Rights", Toast.LENGTH_SHORT).show();
                         Log.e("harsh_debug","Failed to get SU Rights or Unsupported Kernel");
@@ -93,7 +100,7 @@ public class MainActivity extends Activity {
                         p = Runtime.getRuntime().exec(new String[] { "su", "-c", "echo 0 > ", FBDELAY_MS });
                         p.waitFor();
                         mountSystemRW();
-                        copyAssets("99_crtoff");
+                        copyAssets("99_crtoff",INITD);
                     } catch (IOException e) {
                         Toast.makeText(getApplicationContext(), "No SU Rights or Unsupported Kernel", Toast.LENGTH_SHORT).show();
                         Log.e("harsh_debug","Failed to get SU Rights or Unsupported Kernel");
@@ -210,57 +217,128 @@ public class MainActivity extends Activity {
             }
         });
     }
-    
-    public void copyAssets(String script) {
-        AssetManager assetManager = getAssets();
-            InputStream in = null;
-            OutputStream out = null;
-            try {
-              in = assetManager.open(script);
-              File outFile = new File(Environment.getExternalStorageDirectory().getPath(), script);
-              out = new FileOutputStream(outFile);
-              copyFile(in, out);
-              in.close();
-              in = null;
-              out.flush();
-              out.close();
-              out = null;
-            } catch(IOException e) {
-                Log.e("harsh_debug", "Failed to handle: " + script, e);
+
+    public void SetSysctlListner() {
+        Switch sysctl_switch = (Switch) findViewById(R.id.s_sysctl);
+        int var1 = 25;
+        int var2 = 25;
+        try {
+            Process process = new ProcessBuilder().command("su" ,"-c" ,"ls", SYSCTL1, "|", "grep", "-q", "sysctl.conf").start();
+            process.waitFor();
+            var1 = process.exitValue();
+            process.destroy();
+            Process process2 = new ProcessBuilder().command("su" ,"-c" ,"ls", INITD, "|", "grep", "-q", "04_sysctl").start();
+            process2.waitFor();
+            var2 = process2.exitValue();
+            process2.destroy();
+        } catch (IOException e) {
+            Log.e("harsh_debug", "Failed to execute process", e);
+        } catch (InterruptedException e) {
+            Log.e("harsh_debug", "Process Interuppted", e);
+        }
+        sysctl_switch.setChecked(var1 == 0 && var2 == 0);
+        sysctl_switch.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView,
+                                         boolean isChecked) {
+                if (isChecked) {
+                    mountSystemRW();
+                    copyAssets("04_sysctl",INITD);
+                    copyAssets("sysctl.conf",SYSCTL1);
+                    try {
+                        Runtime.getRuntime().exec(new String[]{"su", "-c", "chmod", "644", SYSCTL1+"/sysctl.conf"});
+                        Runtime.getRuntime().exec(new String[]{"su", "-c", "sysctl", "-p"});
+                    } catch (Exception e) {
+                        Log.e("harsh_debug", "Failed to execute process", e);
+                    }
+                    Log.d("harsh_debug","sysctl tweaks enabled");
+                } else {
+                    mountSystemRW();
+                    ClearSys();
+                    copyAssets("sysctl.conf_orig",SYSCTL1);
+                    try {
+                        Runtime.getRuntime().exec(new String[]{"su", "-c", "cp", SYSCTL1+"/sysctl.conf_orig" , SYSCTL1+"/sysctl.conf"});
+                        Runtime.getRuntime().exec(new String[]{"su", "-c", "rm", SYSCTL1+"/sysctl.conf_orig"});
+                        Runtime.getRuntime().exec(new String[]{"su", "-c", "chmod", "644", SYSCTL1+"/sysctl.conf"});
+                        Runtime.getRuntime().exec(new String[]{"su", "-c", "sysctl", "-p"});
+                    } catch (IOException e) {
+                        Log.e("harsh_debug", "Error in Setting permission", e);
+                        e.printStackTrace();
+                    }
+                    ClearSys();
+                    Log.d("harsh_debug","sysctl tweaks disabled");
+                }
             }
-            try {
-            	Process p = Runtime.getRuntime().exec(new String[] { "su", "-c", "cp", Environment.getExternalStorageDirectory().getPath()+"/"+script, "/system/etc/init.d/"+script });
-            	p.waitFor();
-				p = Runtime.getRuntime().exec(new String[] { "su", "-c", "rm", Environment.getExternalStorageDirectory().getPath()+"/"+script });
-				p.waitFor();
-			} catch (IOException e) {
-				Log.e("harsh_debug", "Failed to move: " + script, e);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-            if(script.equals("03_crt") || script.equals("99_crtoff")){
-            	if(script.equals("03_crt")) {
-            		try {
-            			Process p = Runtime.getRuntime().exec(new String[] { "su", "-c", "rm", "/system/etc/init.d/99_crtoff" });
-            			p.waitFor();
-					} catch (IOException e) {
-						Log.e("harsh_debug", "Failed to remove: " + script, e);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-            	}
-            	else {
-            		try {
-            			Process p = Runtime.getRuntime().exec(new String[] { "su", "-c", "rm", "/system/etc/init.d/03_crt" });
-            			p.waitFor();
-					} catch (IOException e) {
-						Log.e("harsh_debug", "Failed to remove: " + script, e);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-            	}
-            }
+        });
     }
+
+    public void ClearSys() {
+        mountSystemRW();
+        Process process = null;
+        try {
+            process = new ProcessBuilder().command("su" ,"-c" ,"rm", "/system/etc/init.d/04_sysctl").start();
+            process.waitFor();
+            process = new ProcessBuilder().command("su", "-c", "rm", "/system/etc/sysctl.conf").start();
+            process.waitFor();
+            process.destroy();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void copyAssets(String script,String path) {
+        AssetManager assetManager = getAssets();
+        InputStream in = null;
+        OutputStream out = null;
+        try {
+            in = assetManager.open(script);
+            File outFile = new File(Environment.getExternalStorageDirectory().getPath(), script);
+            out = new FileOutputStream(outFile);
+            copyFile(in, out);
+            in.close();
+            in = null;
+            out.flush();
+            out.close();
+            out = null;
+        } catch(IOException e) {
+            Log.e("harsh_debug", "Failed to handle: " + script, e);
+        }
+        try {
+            Process p = Runtime.getRuntime().exec(new String[] { "su", "-c", "cp", Environment.getExternalStorageDirectory().getPath()+"/"+script, path+"/"+script });
+            p.waitFor();
+            p = Runtime.getRuntime().exec(new String[] { "su", "-c", "rm", Environment.getExternalStorageDirectory().getPath()+"/"+script });
+            p.waitFor();
+        } catch (IOException e) {
+            Log.e("harsh_debug", "Failed to move: " + script, e);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        if(script.equals("03_crt") || script.equals("99_crtoff")){
+            if(script.equals("03_crt")) {
+                try {
+                    Process p = Runtime.getRuntime().exec(new String[] { "su", "-c", "rm", "/system/etc/init.d/99_crtoff" });
+                    p.waitFor();
+                } catch (IOException e) {
+                    Log.e("harsh_debug", "Failed to remove: " + script, e);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            else {
+                try {
+                    Process p = Runtime.getRuntime().exec(new String[] { "su", "-c", "rm", "/system/etc/init.d/03_crt" });
+                    p.waitFor();
+                } catch (IOException e) {
+                    Log.e("harsh_debug", "Failed to remove: " + script, e);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
     public void copyFile(InputStream in, OutputStream out) throws IOException {
         byte[] buffer = new byte[1024];
         int read;
