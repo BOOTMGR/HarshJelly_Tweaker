@@ -1,16 +1,11 @@
 package com.harsh.romtool;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import android.os.Bundle;
-import android.os.Environment;
-import android.provider.Settings;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.AssetManager;
+import android.os.Bundle;
+import android.os.Environment;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,6 +13,12 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.Switch;
 import android.widget.Toast;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 public class MainActivity extends Activity {
 	
@@ -35,168 +36,12 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Switch crt_anim = (Switch) findViewById(R.id.s_crt);
-        Switch killer = (Switch) findViewById(R.id.s_killer);
-        Switch aosp_vib = (Switch) findViewById(R.id.s_vib);
-        Switch aosp_oriet = (Switch) findViewById(R.id.s_oriet);
-        Switch ascend_ring = (Switch) findViewById(R.id.s_ascendring);
-        Switch logger = (Switch) findViewById(R.id.s_logger);
-        int crt = Settings.System.getInt(getContentResolver(),CRT_ANIM, 0);
-        int Killer = Settings.System.getInt(getContentResolver(),KILLER, 0);
-        int AOSP_VIB = Settings.System.getInt(getContentResolver(),AOSP_VIBRATION, 0);
-        int AOSP_ROT = Settings.System.getInt(getContentResolver(),AOSP_ROTATION, 0);
-        int ringer = Settings.System.getInt(getContentResolver(),ASCEND_RING, 0);
-        final File log_enable = new File(LOGGER);
-        if(crt==0){
-        	crt_anim.setChecked(false);
-        }else{
-        	crt_anim.setChecked(true);
-        }
-        if(Killer==0){
-        	killer.setChecked(false);
-        }else{
-        	killer.setChecked(true);
-        }
-        if(AOSP_VIB==0){
-        	aosp_vib.setChecked(false);
-        }else{
-        	aosp_vib.setChecked(true);
-        }
-        if(AOSP_ROT==0){
-        	aosp_oriet.setChecked(false);
-        }else{
-        	aosp_oriet.setChecked(true);
-        }
-        if(ringer==0){
-        	ascend_ring.setChecked(false);
-        }else{
-        	ascend_ring.setChecked(true);
-        }
-        if(log_enable.exists()){
-        	logger.setChecked(true);
-        }else{
-        	logger.setChecked(false);
-        }
-	        crt_anim.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-		        @Override
-		        public void onCheckedChanged(CompoundButton buttonView,
-		        boolean isChecked) {
-			        	if (isChecked) {
-			        		Settings.System.putInt(getContentResolver(), CRT_ANIM,1);
-			        		Log.d("harsh_debug","harsh_crt=>1");
-			        		try {
-			        			Process p = Runtime.getRuntime().exec(new String[] { "su", "-c", "echo 1 > ", FBDELAY });
-			        			p.waitFor();
-								p = Runtime.getRuntime().exec(new String[] { "su", "-c", "echo 350 > ", FBDELAY_MS });
-								p.waitFor();
-								mountSystemRW();
-								copyAssets("03_crt");
-							} catch (IOException e) {
-								Toast.makeText(getApplicationContext(), "No SU Rights", Toast.LENGTH_SHORT).show();
-								Log.e("harsh_debug","Failed to get SU Rights or Unsupported Kernel");
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-							}
-			        	} else {
-			        		Settings.System.putInt(getContentResolver(), CRT_ANIM,0);
-			        		Log.d("harsh_debug","harsh_crt=>0");
-			        		try {
-			        			Process p = Runtime.getRuntime().exec(new String[] { "su", "-c", "echo 0 > ", FBDELAY });
-			        			p.waitFor();
-			        			p = Runtime.getRuntime().exec(new String[] { "su", "-c", "echo 0 > ", FBDELAY_MS });
-			        			p.waitFor();
-			        			mountSystemRW();
-			        			copyAssets("99_crtoff");
-							} catch (IOException e) {
-								Toast.makeText(getApplicationContext(), "No SU Rights or Unsupported Kernel", Toast.LENGTH_SHORT).show();
-								Log.e("harsh_debug","Failed to get SU Rights or Unsupported Kernel");
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-							} 
-			        	}
-		        }
-	        });
-	        
-	        killer.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-		        @Override
-		        public void onCheckedChanged(CompoundButton buttonView,
-		        boolean isChecked) {
-			        	if (isChecked) {
-			        		Settings.System.putInt(getContentResolver(), KILLER,1);
-			        		Log.d("harsh_debug","harsh_killer=>1");
-			        	} else {
-			        		Settings.System.putInt(getContentResolver(), KILLER,0);
-			        		Log.d("harsh_debug","harsh_killer=>0");
-			        	}
-		        }
-	        });
-	        
-	        aosp_vib.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-		        @Override
-		        public void onCheckedChanged(CompoundButton buttonView,
-		        boolean isChecked) {
-			        	if (isChecked) {
-			        		Settings.System.putInt(getContentResolver(), AOSP_VIBRATION,1);
-			        		Log.d("harsh_debug","harsh_aosp_vib=>1");
-			        	} else {
-			        		Settings.System.putInt(getContentResolver(), AOSP_VIBRATION,0);
-			        		Log.d("harsh_debug","harsh_aosp_vib=>0");
-			        	}
-		        }
-	        });
-	        
-	        aosp_oriet.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-		        @Override
-		        public void onCheckedChanged(CompoundButton buttonView,
-		        boolean isChecked) {
-			        	if (isChecked) {
-			        		Settings.System.putInt(getContentResolver(), AOSP_ROTATION,1);
-			        		Log.d("harsh_debug","harsh_aosp_orient=>1");
-			        	} else {
-			        		Settings.System.putInt(getContentResolver(), AOSP_ROTATION,0);
-			        		Log.d("harsh_debug","harsh_aosp_orient=>0");
-			        	}
-		        }
-	        });
-	        
-	        ascend_ring.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-		        @Override
-		        public void onCheckedChanged(CompoundButton buttonView,
-		        boolean isChecked) {
-			        	if (isChecked) {
-			        		Settings.System.putInt(getContentResolver(), ASCEND_RING,1);
-			        		Log.d("harsh_debug","harsh_ascend_ring=>1");
-			        	} else {
-			        		Settings.System.putInt(getContentResolver(), ASCEND_RING,0);
-			        		Log.d("harsh_debug","harsh_ascend_ring=>0");
-			        	}
-		        }
-	        });
-	        
-	        logger.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-		        @Override
-		        public void onCheckedChanged(CompoundButton buttonView,
-		        boolean isChecked) {
-			        	if (isChecked) {
-			        		try {
-			        			Process p = Runtime.getRuntime().exec(new String[] {"su","-c","touch",LOGGER});
-			        			p.waitFor();
-			                    Runtime.getRuntime().exec(new String[] {"su","-c","chmod","777",LOGGER});
-			                } catch (Exception e) {  
-			                	Log.e("harsh_debug","Failed to create logger", e);
-			                }
-			        		Log.d("harsh_debug","logger enabled");
-			        	} else {
-			        		try {
-			        			Process p = Runtime.getRuntime().exec(new String[] {"su","-c","rm",LOGGER});
-			        			p.waitFor();
-							} catch (Exception e) {
-								Log.e("harsh_debug","Failed to remove logger", e);
-							}
-			        		Log.d("harsh_debug","logger disabled");
-			        	}
-		        }
-	        });
+        SetCRTListner();
+        SetKillerListner();
+        SetAOSPVibListner();
+        SetAOSPOrientListner();
+        SetRingerListner();
+        SetLoggerListner();
     }
     
     @Override
@@ -213,6 +58,157 @@ public class MainActivity extends Activity {
         default:
         return super.onOptionsItemSelected(item);
     }
+    }
+
+    public void SetCRTListner() {
+        Switch crt_anim = (Switch) findViewById(R.id.s_crt);
+        int crt = Settings.System.getInt(getContentResolver(),CRT_ANIM, 0);
+        crt_anim.setChecked(crt != 0);
+        crt_anim.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView,
+                                         boolean isChecked) {
+                if (isChecked) {
+                    Settings.System.putInt(getContentResolver(), CRT_ANIM,1);
+                    Log.d("harsh_debug","harsh_crt=>1");
+                    try {
+                        Process p = Runtime.getRuntime().exec(new String[] { "su", "-c", "echo 1 > ", FBDELAY });
+                        p.waitFor();
+                        p = Runtime.getRuntime().exec(new String[] { "su", "-c", "echo 350 > ", FBDELAY_MS });
+                        p.waitFor();
+                        mountSystemRW();
+                        copyAssets("03_crt");
+                    } catch (IOException e) {
+                        Toast.makeText(getApplicationContext(), "No SU Rights", Toast.LENGTH_SHORT).show();
+                        Log.e("harsh_debug","Failed to get SU Rights or Unsupported Kernel");
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    Settings.System.putInt(getContentResolver(), CRT_ANIM,0);
+                    Log.d("harsh_debug","harsh_crt=>0");
+                    try {
+                        Process p = Runtime.getRuntime().exec(new String[] { "su", "-c", "echo 0 > ", FBDELAY });
+                        p.waitFor();
+                        p = Runtime.getRuntime().exec(new String[] { "su", "-c", "echo 0 > ", FBDELAY_MS });
+                        p.waitFor();
+                        mountSystemRW();
+                        copyAssets("99_crtoff");
+                    } catch (IOException e) {
+                        Toast.makeText(getApplicationContext(), "No SU Rights or Unsupported Kernel", Toast.LENGTH_SHORT).show();
+                        Log.e("harsh_debug","Failed to get SU Rights or Unsupported Kernel");
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
+
+    public void SetKillerListner() {
+        Switch killer = (Switch) findViewById(R.id.s_killer);
+        int Killer = Settings.System.getInt(getContentResolver(),KILLER, 0);
+        killer.setChecked(Killer != 0);
+        killer.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView,
+                                         boolean isChecked) {
+                if (isChecked) {
+                    Settings.System.putInt(getContentResolver(), KILLER,1);
+                    Log.d("harsh_debug","harsh_killer=>1");
+                } else {
+                    Settings.System.putInt(getContentResolver(), KILLER,0);
+                    Log.d("harsh_debug","harsh_killer=>0");
+                }
+            }
+        });
+    }
+
+    public void SetAOSPVibListner() {
+        Switch aosp_vib = (Switch) findViewById(R.id.s_vib);
+        int AOSP_VIB = Settings.System.getInt(getContentResolver(),AOSP_VIBRATION, 0);
+        aosp_vib.setChecked(AOSP_VIB != 0);
+        aosp_vib.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView,
+                                         boolean isChecked) {
+                if (isChecked) {
+                    Settings.System.putInt(getContentResolver(), AOSP_VIBRATION,1);
+                    Log.d("harsh_debug","harsh_aosp_vib=>1");
+                } else {
+                    Settings.System.putInt(getContentResolver(), AOSP_VIBRATION,0);
+                    Log.d("harsh_debug","harsh_aosp_vib=>0");
+                }
+            }
+        });
+    }
+
+    public void SetAOSPOrientListner() {
+        Switch aosp_oriet = (Switch) findViewById(R.id.s_oriet);
+        int AOSP_ROT = Settings.System.getInt(getContentResolver(),AOSP_ROTATION, 0);
+        aosp_oriet.setChecked(AOSP_ROT != 0);
+        aosp_oriet.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView,
+                                         boolean isChecked) {
+                if (isChecked) {
+                    Settings.System.putInt(getContentResolver(), AOSP_ROTATION,1);
+                    Log.d("harsh_debug","harsh_aosp_orient=>1");
+                } else {
+                    Settings.System.putInt(getContentResolver(), AOSP_ROTATION,0);
+                    Log.d("harsh_debug","harsh_aosp_orient=>0");
+                }
+            }
+        });
+    }
+
+    public void SetRingerListner() {
+        Switch ascend_ring = (Switch) findViewById(R.id.s_ascendring);
+        int ringer = Settings.System.getInt(getContentResolver(),ASCEND_RING, 0);
+        ascend_ring.setChecked(ringer != 0);
+        ascend_ring.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView,
+                                         boolean isChecked) {
+                if (isChecked) {
+                    Settings.System.putInt(getContentResolver(), ASCEND_RING,1);
+                    Log.d("harsh_debug","harsh_ascend_ring=>1");
+                } else {
+                    Settings.System.putInt(getContentResolver(), ASCEND_RING,0);
+                    Log.d("harsh_debug","harsh_ascend_ring=>0");
+                }
+            }
+        });
+    }
+
+    public void SetLoggerListner() {
+        Switch logger = (Switch) findViewById(R.id.s_logger);
+        final File log_enable = new File(LOGGER);
+        logger.setChecked(log_enable.exists());
+        logger.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView,
+                                         boolean isChecked) {
+                if (isChecked) {
+                    try {
+                        Process p = Runtime.getRuntime().exec(new String[] {"su","-c","touch",LOGGER});
+                        p.waitFor();
+                        Runtime.getRuntime().exec(new String[]{"su", "-c", "chmod", "777", LOGGER});
+                    } catch (Exception e) {
+                        Log.e("harsh_debug","Failed to create logger", e);
+                    }
+                    Log.d("harsh_debug","logger enabled");
+                } else {
+                    try {
+                        Process p = Runtime.getRuntime().exec(new String[] {"su","-c","rm",LOGGER});
+                        p.waitFor();
+                    } catch (Exception e) {
+                        Log.e("harsh_debug","Failed to remove logger", e);
+                    }
+                    Log.d("harsh_debug","logger disabled");
+                }
+            }
+        });
     }
     
     public void copyAssets(String script) {
@@ -242,8 +238,8 @@ public class MainActivity extends Activity {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-            if(script=="03_crt" || script=="99_crtoff"){ 
-            	if(script=="03_crt") {
+            if(script.equals("03_crt") || script.equals("99_crtoff")){
+            	if(script.equals("03_crt")) {
             		try {
             			Process p = Runtime.getRuntime().exec(new String[] { "su", "-c", "rm", "/system/etc/init.d/99_crtoff" });
             			p.waitFor();
@@ -280,5 +276,4 @@ public class MainActivity extends Activity {
 			Log.e("harsh_debug", "Failed to mount system as R/W", e);
 		}
     }
-    
 }
