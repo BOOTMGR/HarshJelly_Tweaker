@@ -1,17 +1,18 @@
 package com.harsh.romtool;
 
-import android.app.Activity;
+
+
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.Preference;
+import android.preference.PreferenceActivity;
+import android.preference.SwitchPreference;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.Switch;
 import android.widget.Toast;
 
 import java.io.File;
@@ -20,25 +21,24 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class MainActivity extends Activity {
-	
-	
-	private static final String CRT_ANIM = "harsh_crt";
-	private static final String KILLER = "harsh_killer";
-	private static final String AOSP_VIBRATION = "harsh_aosp_vib";
-	private static final String AOSP_ROTATION = "harsh_aosp_orient";
-	private static final String ASCEND_RING = "harsh_ascend_ring";
-	private static final String FBDELAY = "/sys/module/fbearlysuspend/parameters/fbdelay";
-	private static final String FBDELAY_MS = "/sys/module/fbearlysuspend/parameters/fbdelay_ms";
-	private static final String LOGGER = "/data/logger";
+public class MainActivity extends PreferenceActivity {
+
+    private static final String CRT_ANIM = "harsh_crt";
+    private static final String KILLER = "harsh_killer";
+    private static final String AOSP_VIBRATION = "harsh_aosp_vib";
+    private static final String AOSP_ROTATION = "harsh_aosp_orient";
+    private static final String ASCEND_RING = "harsh_ascend_ring";
+    private static final String FBDELAY = "/sys/module/fbearlysuspend/parameters/fbdelay";
+    private static final String FBDELAY_MS = "/sys/module/fbearlysuspend/parameters/fbdelay_ms";
+    private static final String LOGGER = "/data/logger";
     private static final String SYSCTL1 = "/system/etc";
     private static final String INITD = "/system/etc/init.d";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Log.i("harsh_debug","===========HarshJelly Tweaker Launched===========");
+        addPreferencesFromResource(R.xml.main);
+        Log.i("harsh_debug", "===========HarshJelly Tweaker Launched===========");
         SetCRTListner();
         SetKillerListner();
         SetAOSPVibListner();
@@ -49,34 +49,31 @@ public class MainActivity extends Activity {
         SetSysctlListner();
     }
 
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu, menu);
         return true;
     }
-    
+
     public boolean onOptionsItemSelected(MenuItem item) {
-    	switch (item.getItemId()) {
-        case R.id.about:
-        startActivity(new Intent(this, About.class));
-        return true;
-        default:
-        return super.onOptionsItemSelected(item);
-    }
+        switch (item.getItemId()) {
+            case R.id.about:
+                startActivity(new Intent(this, About.class));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     public void SetCRTListner() {
-        Switch crt_anim = (Switch) findViewById(R.id.s_crt);
+        SwitchPreference crt_toggle = (SwitchPreference) findPreference("crt_toggle");
         int crt = Settings.System.getInt(getContentResolver(),CRT_ANIM, 0);
-        crt_anim.setChecked(crt != 0);
-        crt_anim.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView,
-                                         boolean isChecked) {
-                if (isChecked) {
-                    Settings.System.putInt(getContentResolver(), CRT_ANIM,1);
+        crt_toggle.setChecked(crt != 0);
+        crt_toggle.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener(){
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                if (newValue.toString().equals("true")) {
+                    Settings.System.putInt(getContentResolver(), CRT_ANIM, 1);
                     Log.d("harsh_debug","harsh_crt=>1");
                     try {
                         Process p = Runtime.getRuntime().exec(new String[] { "su", "-c", "echo 1 > ", FBDELAY });
@@ -92,7 +89,7 @@ public class MainActivity extends Activity {
                         e.printStackTrace();
                     }
                 } else {
-                    Settings.System.putInt(getContentResolver(), CRT_ANIM,0);
+                    Settings.System.putInt(getContentResolver(), CRT_ANIM, 0);
                     Log.d("harsh_debug","harsh_crt=>0");
                     try {
                         Process p = Runtime.getRuntime().exec(new String[] { "su", "-c", "echo 0 > ", FBDELAY });
@@ -108,95 +105,90 @@ public class MainActivity extends Activity {
                         e.printStackTrace();
                     }
                 }
+                return true;
             }
         });
     }
 
     public void SetKillerListner() {
-        Switch killer = (Switch) findViewById(R.id.s_killer);
+        SwitchPreference killer = (SwitchPreference) findPreference("killer_toggle");
         int Killer = Settings.System.getInt(getContentResolver(),KILLER, 0);
         killer.setChecked(Killer != 0);
-        killer.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView,
-                                         boolean isChecked) {
-                if (isChecked) {
+        killer.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener(){
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                if (newValue.toString().equals("true")) {
                     Settings.System.putInt(getContentResolver(), KILLER,1);
                     Log.d("harsh_debug","harsh_killer=>1");
                 } else {
                     Settings.System.putInt(getContentResolver(), KILLER,0);
                     Log.d("harsh_debug","harsh_killer=>0");
                 }
+                return true;
             }
         });
     }
 
     public void SetAOSPVibListner() {
-        Switch aosp_vib = (Switch) findViewById(R.id.s_vib);
+        SwitchPreference aosp_vib = (SwitchPreference) findPreference("vib_toggle");
         int AOSP_VIB = Settings.System.getInt(getContentResolver(),AOSP_VIBRATION, 0);
         aosp_vib.setChecked(AOSP_VIB != 0);
-        aosp_vib.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView,
-                                         boolean isChecked) {
-                if (isChecked) {
+        aosp_vib.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener(){
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                if (newValue.toString().equals("true")) {
                     Settings.System.putInt(getContentResolver(), AOSP_VIBRATION,1);
                     Log.d("harsh_debug","harsh_aosp_vib=>1");
                 } else {
                     Settings.System.putInt(getContentResolver(), AOSP_VIBRATION,0);
                     Log.d("harsh_debug","harsh_aosp_vib=>0");
                 }
+                return true;
             }
         });
     }
 
     public void SetAOSPOrientListner() {
-        Switch aosp_oriet = (Switch) findViewById(R.id.s_oriet);
+        SwitchPreference aosp_oriet = (SwitchPreference) findPreference("rot_toggle");
         int AOSP_ROT = Settings.System.getInt(getContentResolver(),AOSP_ROTATION, 0);
         aosp_oriet.setChecked(AOSP_ROT != 0);
-        aosp_oriet.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView,
-                                         boolean isChecked) {
-                if (isChecked) {
+        aosp_oriet.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener(){
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                if (newValue.toString().equals("true")) {
                     Settings.System.putInt(getContentResolver(), AOSP_ROTATION,1);
                     Log.d("harsh_debug","harsh_aosp_orient=>1");
                 } else {
                     Settings.System.putInt(getContentResolver(), AOSP_ROTATION,0);
                     Log.d("harsh_debug","harsh_aosp_orient=>0");
                 }
+                return true;
             }
         });
     }
 
     public void SetRingerListner() {
-        Switch ascend_ring = (Switch) findViewById(R.id.s_ascendring);
+        SwitchPreference ascend_ring = (SwitchPreference) findPreference("ascending_toggle");
         int ringer = Settings.System.getInt(getContentResolver(),ASCEND_RING, 0);
         ascend_ring.setChecked(ringer != 0);
-        ascend_ring.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView,
-                                         boolean isChecked) {
-                if (isChecked) {
+        ascend_ring.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener(){
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                if (newValue.toString().equals("true")) {
                     Settings.System.putInt(getContentResolver(), ASCEND_RING,1);
                     Log.d("harsh_debug","harsh_ascend_ring=>1");
                 } else {
                     Settings.System.putInt(getContentResolver(), ASCEND_RING,0);
                     Log.d("harsh_debug","harsh_ascend_ring=>0");
                 }
+                return true;
             }
         });
     }
 
     public void SetLoggerListner() {
-        Switch logger = (Switch) findViewById(R.id.s_logger);
+        SwitchPreference logger = (SwitchPreference) findPreference("log_toggle");
         final File log_enable = new File(LOGGER);
         logger.setChecked(log_enable.exists());
-        logger.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView,
-                                         boolean isChecked) {
-                if (isChecked) {
+        logger.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener(){
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                if (newValue.toString().equals("true")) {
                     try {
                         Process p = Runtime.getRuntime().exec(new String[] {"su","-c","touch",LOGGER});
                         p.waitFor();
@@ -214,14 +206,15 @@ public class MainActivity extends Activity {
                     }
                     Log.d("harsh_debug","logger disabled");
                 }
+                return true;
             }
         });
     }
 
     public void SetSysctlListner() {
-        Switch sysctl_switch = (Switch) findViewById(R.id.s_sysctl);
-        int var1 = 25;
-        int var2 = 25;
+        SwitchPreference sysctl_switch = (SwitchPreference) findPreference("sys_toggle");
+        int var1=0;
+        int var2=0;
         try {
             Process process = new ProcessBuilder().command("su" ,"-c" ,"ls", SYSCTL1, "|", "grep", "-q", "sysctl.conf").start();
             process.waitFor();
@@ -237,11 +230,9 @@ public class MainActivity extends Activity {
             Log.e("harsh_debug", "Process Interuppted", e);
         }
         sysctl_switch.setChecked(var1 == 0 && var2 == 0);
-        sysctl_switch.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView,
-                                         boolean isChecked) {
-                if (isChecked) {
+        sysctl_switch.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener(){
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                if (newValue.toString().equals("true")) {
                     mountSystemRW();
                     copyAssets("04_sysctl",INITD);
                     copyAssets("sysctl.conf",SYSCTL1);
@@ -268,6 +259,7 @@ public class MainActivity extends Activity {
                     ClearSys();
                     Log.d("harsh_debug","sysctl tweaks disabled");
                 }
+                return true;
             }
         });
     }
@@ -343,15 +335,16 @@ public class MainActivity extends Activity {
         byte[] buffer = new byte[1024];
         int read;
         while((read = in.read(buffer)) != -1){
-          out.write(buffer, 0, read);
+            out.write(buffer, 0, read);
         }
     }
-    
+
     public void mountSystemRW() {
-    	try {
-			Runtime.getRuntime().exec(new String[] { "su", "-c", "mount", "-o", "remount,rw", "/dev/block/mmcblk0p3", "/system" });
-		} catch (IOException e) {
-			Log.e("harsh_debug", "Failed to mount system as R/W", e);
-		}
+        try {
+            Runtime.getRuntime().exec(new String[] { "su", "-c", "mount", "-o", "remount,rw", "/dev/block/mmcblk0p3", "/system" });
+        } catch (IOException e) {
+            Log.e("harsh_debug", "Failed to mount system as R/W", e);
+        }
     }
+
 }
