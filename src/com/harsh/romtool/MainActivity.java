@@ -2,6 +2,11 @@ package com.harsh.romtool;
 
 
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.Bundle;
@@ -276,9 +281,11 @@ public class MainActivity extends PreferenceActivity {
                 if (unplug_wake.isChecked()) {
                     Settings.System.putInt(getContentResolver(), UNPLUG_WAKE,1);
                     Log.d("harsh_debug","harsh_unplug=>1");
+                    showhotbootDialog();
                 } else {
                     Settings.System.putInt(getContentResolver(), UNPLUG_WAKE,0);
                     Log.d("harsh_debug","harsh_unplug=>0");
+                    showhotbootDialog();
                 }
                 return false;
             }
@@ -367,5 +374,28 @@ public class MainActivity extends PreferenceActivity {
             Log.e("harsh_debug", "Failed to mount system as R/W", e);
         }
     }
+
+    public void showhotbootDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setMessage(R.string.hotboot_msg);
+        builder.setTitle(R.string.information);
+        builder.setCancelable(false);
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                Process process;
+                try {
+                    process = new ProcessBuilder().command("su" ,"-c" ,"pkill", "-f", "system_server").start();
+                } catch (IOException e) {
+                    Log.e("harsh_debug", "Failed to HotBoot", e);
+                }
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {}
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
 
 }

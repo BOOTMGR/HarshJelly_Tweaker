@@ -20,5 +20,9 @@
     <string name="lock">LockScreen Tweaks</string>
     <string name="misc">Miscellaneous Tweaks</string>
     <string name="unplug">Wake on Unplug</string>
+    <string name="information">Information</string>
+    <string name="hotboot_msg">Changes will take only Effect after Hotboot.Do you want to Hotboot now?</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
 
 </resources>
