@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.SwitchPreference;
@@ -67,12 +68,12 @@ public class MainActivity extends PreferenceActivity {
     }
 
     public void SetCRTListner() {
-        SwitchPreference crt_toggle = (SwitchPreference) findPreference("crt_toggle");
+        final CheckBoxPreference crt_toggle = (CheckBoxPreference) findPreference("crt_toggle");
         int crt = Settings.System.getInt(getContentResolver(),CRT_ANIM, 0);
         crt_toggle.setChecked(crt != 0);
-        crt_toggle.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener(){
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                if (newValue.toString().equals("true")) {
+        crt_toggle.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
+            public boolean onPreferenceClick(Preference preference) {
+                if (crt_toggle.isChecked()) {
                     Settings.System.putInt(getContentResolver(), CRT_ANIM, 1);
                     Log.d("harsh_debug","harsh_crt=>1");
                     try {
@@ -105,90 +106,90 @@ public class MainActivity extends PreferenceActivity {
                         e.printStackTrace();
                     }
                 }
-                return true;
+                return false;
             }
         });
     }
 
     public void SetKillerListner() {
-        SwitchPreference killer = (SwitchPreference) findPreference("killer_toggle");
+        final CheckBoxPreference killer = (CheckBoxPreference) findPreference("killer_toggle");
         int Killer = Settings.System.getInt(getContentResolver(),KILLER, 0);
         killer.setChecked(Killer != 0);
-        killer.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener(){
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                if (newValue.toString().equals("true")) {
+        killer.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
+            public boolean onPreferenceClick(Preference preference) {
+                if (killer.isChecked()) {
                     Settings.System.putInt(getContentResolver(), KILLER,1);
                     Log.d("harsh_debug","harsh_killer=>1");
                 } else {
                     Settings.System.putInt(getContentResolver(), KILLER,0);
                     Log.d("harsh_debug","harsh_killer=>0");
                 }
-                return true;
+                return false;
             }
         });
     }
 
     public void SetAOSPVibListner() {
-        SwitchPreference aosp_vib = (SwitchPreference) findPreference("vib_toggle");
+        final CheckBoxPreference aosp_vib = (CheckBoxPreference) findPreference("vib_toggle");
         int AOSP_VIB = Settings.System.getInt(getContentResolver(),AOSP_VIBRATION, 0);
         aosp_vib.setChecked(AOSP_VIB != 0);
-        aosp_vib.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener(){
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                if (newValue.toString().equals("true")) {
+        aosp_vib.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
+            public boolean onPreferenceClick(Preference preference) {
+                if (aosp_vib.isChecked()) {
                     Settings.System.putInt(getContentResolver(), AOSP_VIBRATION,1);
                     Log.d("harsh_debug","harsh_aosp_vib=>1");
                 } else {
                     Settings.System.putInt(getContentResolver(), AOSP_VIBRATION,0);
                     Log.d("harsh_debug","harsh_aosp_vib=>0");
                 }
-                return true;
+                return false;
             }
         });
     }
 
     public void SetAOSPOrientListner() {
-        SwitchPreference aosp_oriet = (SwitchPreference) findPreference("rot_toggle");
+        final CheckBoxPreference aosp_oriet = (CheckBoxPreference) findPreference("rot_toggle");
         int AOSP_ROT = Settings.System.getInt(getContentResolver(),AOSP_ROTATION, 0);
         aosp_oriet.setChecked(AOSP_ROT != 0);
-        aosp_oriet.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener(){
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                if (newValue.toString().equals("true")) {
+        aosp_oriet.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
+            public boolean onPreferenceClick(Preference preference) {
+                if (aosp_oriet.isChecked()) {
                     Settings.System.putInt(getContentResolver(), AOSP_ROTATION,1);
                     Log.d("harsh_debug","harsh_aosp_orient=>1");
                 } else {
                     Settings.System.putInt(getContentResolver(), AOSP_ROTATION,0);
                     Log.d("harsh_debug","harsh_aosp_orient=>0");
                 }
-                return true;
+                return false;
             }
         });
     }
 
     public void SetRingerListner() {
-        SwitchPreference ascend_ring = (SwitchPreference) findPreference("ascending_toggle");
+        final CheckBoxPreference ascend_ring = (CheckBoxPreference) findPreference("ascending_toggle");
         int ringer = Settings.System.getInt(getContentResolver(),ASCEND_RING, 0);
         ascend_ring.setChecked(ringer != 0);
-        ascend_ring.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener(){
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                if (newValue.toString().equals("true")) {
+        ascend_ring.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
+            public boolean onPreferenceClick(Preference preference) {
+                if (ascend_ring.isChecked()) {
                     Settings.System.putInt(getContentResolver(), ASCEND_RING,1);
                     Log.d("harsh_debug","harsh_ascend_ring=>1");
                 } else {
                     Settings.System.putInt(getContentResolver(), ASCEND_RING,0);
                     Log.d("harsh_debug","harsh_ascend_ring=>0");
                 }
-                return true;
+                return false;
             }
         });
     }
 
     public void SetLoggerListner() {
-        SwitchPreference logger = (SwitchPreference) findPreference("log_toggle");
+        final CheckBoxPreference logger = (CheckBoxPreference) findPreference("log_toggle");
         final File log_enable = new File(LOGGER);
         logger.setChecked(log_enable.exists());
-        logger.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener(){
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                if (newValue.toString().equals("true")) {
+        logger.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
+            public boolean onPreferenceClick(Preference preference) {
+                if (logger.isChecked()) {
                     try {
                         Process p = Runtime.getRuntime().exec(new String[] {"su","-c","touch",LOGGER});
                         p.waitFor();
@@ -206,13 +207,13 @@ public class MainActivity extends PreferenceActivity {
                     }
                     Log.d("harsh_debug","logger disabled");
                 }
-                return true;
+                return false;
             }
         });
     }
 
     public void SetSysctlListner() {
-        SwitchPreference sysctl_switch = (SwitchPreference) findPreference("sys_toggle");
+        final CheckBoxPreference sysctl_switch = (CheckBoxPreference) findPreference("sys_toggle");
         int var1=0;
         int var2=0;
         try {
@@ -230,9 +231,9 @@ public class MainActivity extends PreferenceActivity {
             Log.e("harsh_debug", "Process Interuppted", e);
         }
         sysctl_switch.setChecked(var1 == 0 && var2 == 0);
-        sysctl_switch.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener(){
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                if (newValue.toString().equals("true")) {
+        sysctl_switch.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
+            public boolean onPreferenceClick(Preference preference) {
+                if (sysctl_switch.isChecked()) {
                     mountSystemRW();
                     copyAssets("04_sysctl",INITD);
                     copyAssets("sysctl.conf",SYSCTL1);
@@ -259,7 +260,7 @@ public class MainActivity extends PreferenceActivity {
                     ClearSys();
                     Log.d("harsh_debug","sysctl tweaks disabled");
                 }
-                return true;
+                return false;
             }
         });
     }
