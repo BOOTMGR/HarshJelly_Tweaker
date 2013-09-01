@@ -16,8 +16,9 @@
     <string name="author">Developer:</string>
     <string name="log">Logger</string>
     <string name="sysctl">Sysctl Tweaks</string>
-    <string name="basic">Basic Tweaks</string>
+    <string name="basic">ROM Tweaks</string>
     <string name="lock">LockScreen Tweaks</string>
     <string name="misc">Miscellaneous Tweaks</string>
+    <string name="unplug">Wake on Unplug</string>
 
 </resources>

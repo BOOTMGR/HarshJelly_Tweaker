@@ -2,16 +2,17 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory android:title="@string/basic" >
-        <CheckBoxPreference android:title="@string/crt_animation" android:id="@+id/s_crt" android:key="crt_toggle"/>
-        <CheckBoxPreference android:title="@string/killer" android:id="@+id/s_killer" android:key="killer_toggle"/>
-        <CheckBoxPreference android:title="@string/ascend_ring" android:id="@+id/s_ascendring" android:key="ascending_toggle"/>
+        <CheckBoxPreference android:title="@string/crt_animation" android:key="crt_toggle"/>
+        <CheckBoxPreference android:title="@string/killer" android:key="killer_toggle"/>
+        <CheckBoxPreference android:title="@string/ascend_ring" android:key="ascending_toggle"/>
+        <CheckBoxPreference android:title="@string/unplug" android:key="unplug_wake"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/lock" >
-        <CheckBoxPreference android:title="@string/aosp_vib" android:id="@+id/s_vib" android:key="vib_toggle"/>
-        <CheckBoxPreference android:title="@string/aosp_oriet" android:id="@+id/s_oriet" android:key="rot_toggle"/>
+        <CheckBoxPreference android:title="@string/aosp_vib" android:key="vib_toggle"/>
+        <CheckBoxPreference android:title="@string/aosp_oriet" android:key="rot_toggle"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/misc" >
-        <CheckBoxPreference android:title="@string/log" android:id="@+id/s_logger" android:key="log_toggle"/>
-        <CheckBoxPreference android:title="@string/sysctl" android:id="@+id/s_sysctl" android:key="sys_toggle"/>
+        <CheckBoxPreference android:title="@string/log" android:key="log_toggle"/>
+        <CheckBoxPreference android:title="@string/sysctl" android:key="sys_toggle"/>
     </PreferenceCategory>
 </PreferenceScreen>

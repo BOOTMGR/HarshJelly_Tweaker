@@ -9,7 +9,6 @@ import android.os.Environment;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
-import android.preference.SwitchPreference;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
@@ -24,11 +23,13 @@ import java.io.OutputStream;
 
 public class MainActivity extends PreferenceActivity {
 
+
     private static final String CRT_ANIM = "harsh_crt";
     private static final String KILLER = "harsh_killer";
     private static final String AOSP_VIBRATION = "harsh_aosp_vib";
     private static final String AOSP_ROTATION = "harsh_aosp_orient";
     private static final String ASCEND_RING = "harsh_ascend_ring";
+    private static final String UNPLUG_WAKE = "harsh_unplug";
     private static final String FBDELAY = "/sys/module/fbearlysuspend/parameters/fbdelay";
     private static final String FBDELAY_MS = "/sys/module/fbearlysuspend/parameters/fbdelay_ms";
     private static final String LOGGER = "/data/logger";
@@ -48,6 +49,7 @@ public class MainActivity extends PreferenceActivity {
         SetLoggerListner();
         SetSysctlListner();
         SetSysctlListner();
+        SetUnplugListener();
     }
 
     @Override
@@ -259,6 +261,24 @@ public class MainActivity extends PreferenceActivity {
                     }
                     ClearSys();
                     Log.d("harsh_debug","sysctl tweaks disabled");
+                }
+                return false;
+            }
+        });
+    }
+
+    public void SetUnplugListener() {
+        final CheckBoxPreference unplug_wake = (CheckBoxPreference) findPreference("unplug_wake");
+        int uwake = Settings.System.getInt(getContentResolver(),UNPLUG_WAKE, 0);
+        unplug_wake.setChecked(uwake != 0);
+        unplug_wake.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
+            public boolean onPreferenceClick(Preference preference) {
+                if (unplug_wake.isChecked()) {
+                    Settings.System.putInt(getContentResolver(), UNPLUG_WAKE,1);
+                    Log.d("harsh_debug","harsh_unplug=>1");
+                } else {
+                    Settings.System.putInt(getContentResolver(), UNPLUG_WAKE,0);
+                    Log.d("harsh_debug","harsh_unplug=>0");
                 }
                 return false;
             }
