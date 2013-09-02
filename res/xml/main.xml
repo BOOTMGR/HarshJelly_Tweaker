@@ -6,6 +6,7 @@
         <CheckBoxPreference android:title="@string/killer" android:key="killer_toggle"/>
         <CheckBoxPreference android:title="@string/ascend_ring" android:key="ascending_toggle"/>
         <CheckBoxPreference android:title="@string/unplug" android:key="unplug_wake"/>
+        <CheckBoxPreference android:title="@string/all_rot" android:key="allrot_toggle"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/lock" >
         <CheckBoxPreference android:title="@string/aosp_vib" android:key="vib_toggle"/>

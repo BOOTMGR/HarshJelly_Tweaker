@@ -24,5 +24,6 @@
     <string name="hotboot_msg">Changes will take only Effect after Hotboot.Do you want to Hotboot now?</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+    <string name="all_rot">Allow All Rotations</string>
 
 </resources>

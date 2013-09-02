@@ -35,6 +35,7 @@ public class MainActivity extends PreferenceActivity {
     private static final String AOSP_ROTATION = "harsh_aosp_orient";
     private static final String ASCEND_RING = "harsh_ascend_ring";
     private static final String UNPLUG_WAKE = "harsh_unplug";
+    private static final String ALL_ROTATE = "harsh_rotate";
     private static final String FBDELAY = "/sys/module/fbearlysuspend/parameters/fbdelay";
     private static final String FBDELAY_MS = "/sys/module/fbearlysuspend/parameters/fbdelay_ms";
     private static final String LOGGER = "/data/logger";
@@ -55,6 +56,7 @@ public class MainActivity extends PreferenceActivity {
         SetSysctlListner();
         SetSysctlListner();
         SetUnplugListener();
+        SetAllRotateListener();
     }
 
     @Override
@@ -285,6 +287,26 @@ public class MainActivity extends PreferenceActivity {
                 } else {
                     Settings.System.putInt(getContentResolver(), UNPLUG_WAKE,0);
                     Log.d("harsh_debug","harsh_unplug=>0");
+                    showhotbootDialog();
+                }
+                return false;
+            }
+        });
+    }
+
+    public void SetAllRotateListener() {
+        final CheckBoxPreference all_rotate = (CheckBoxPreference) findPreference("allrot_toggle");
+        int val = Settings.System.getInt(getContentResolver(),ALL_ROTATE, 0);
+        all_rotate.setChecked(val != 0);
+        all_rotate.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
+            public boolean onPreferenceClick(Preference preference) {
+                if (all_rotate.isChecked()) {
+                    Settings.System.putInt(getContentResolver(), ALL_ROTATE,1);
+                    Log.d("harsh_debug","harsh_rotate=>1");
+                    showhotbootDialog();
+                } else {
+                    Settings.System.putInt(getContentResolver(), ALL_ROTATE,0);
+                    Log.d("harsh_debug","harsh_rotate=>0");
                     showhotbootDialog();
                 }
                 return false;
