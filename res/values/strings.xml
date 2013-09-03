@@ -25,5 +25,6 @@
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="all_rot">Allow All Rotations</string>
+    <string name="hotboot">Hotboot</string>
 
 </resources>

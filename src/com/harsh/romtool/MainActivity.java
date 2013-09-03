@@ -3,9 +3,6 @@ package com.harsh.romtool;
 
 
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.AssetManager;
@@ -71,6 +68,9 @@ public class MainActivity extends PreferenceActivity {
             case R.id.about:
                 startActivity(new Intent(this, About.class));
                 return true;
+            case R.id.hotboot:
+                showhotbootDialog();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -91,9 +91,9 @@ public class MainActivity extends PreferenceActivity {
                         p = Runtime.getRuntime().exec(new String[] { "su", "-c", "echo 350 > ", FBDELAY_MS });
                         p.waitFor();
                         mountSystemRW();
-                        copyAssets("03_crt",INITD);
+                        copyAssets("03_crt",INITD,777);
                     } catch (IOException e) {
-                        Toast.makeText(getApplicationContext(), "No SU Rights", Toast.LENGTH_SHORT).show();
+                        ShowToast("No SU Rights");
                         Log.e("harsh_debug","Failed to get SU Rights or Unsupported Kernel");
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -107,9 +107,9 @@ public class MainActivity extends PreferenceActivity {
                         p = Runtime.getRuntime().exec(new String[] { "su", "-c", "echo 0 > ", FBDELAY_MS });
                         p.waitFor();
                         mountSystemRW();
-                        copyAssets("99_crtoff",INITD);
+                        copyAssets("99_crtoff",INITD,777);
                     } catch (IOException e) {
-                        Toast.makeText(getApplicationContext(), "No SU Rights or Unsupported Kernel", Toast.LENGTH_SHORT).show();
+                        ShowToast("No SU Rights or unsupported Kernel");
                         Log.e("harsh_debug","Failed to get SU Rights or Unsupported Kernel");
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -244,10 +244,9 @@ public class MainActivity extends PreferenceActivity {
             public boolean onPreferenceClick(Preference preference) {
                 if (sysctl_switch.isChecked()) {
                     mountSystemRW();
-                    copyAssets("04_sysctl",INITD);
-                    copyAssets("sysctl.conf",SYSCTL1);
+                    copyAssets("04_sysctl",INITD,777);
+                    copyAssets("sysctl.conf",SYSCTL1,644);
                     try {
-                        Runtime.getRuntime().exec(new String[]{"su", "-c", "chmod", "644", SYSCTL1+"/sysctl.conf"});
                         Runtime.getRuntime().exec(new String[]{"su", "-c", "sysctl", "-p"});
                     } catch (Exception e) {
                         Log.e("harsh_debug", "Failed to execute process", e);
@@ -256,7 +255,7 @@ public class MainActivity extends PreferenceActivity {
                 } else {
                     mountSystemRW();
                     ClearSys();
-                    copyAssets("sysctl.conf_orig",SYSCTL1);
+                    copyAssets("sysctl.conf_orig",SYSCTL1,644);
                     try {
                         Runtime.getRuntime().exec(new String[]{"su", "-c", "cp", SYSCTL1+"/sysctl.conf_orig" , SYSCTL1+"/sysctl.conf"});
                         Runtime.getRuntime().exec(new String[]{"su", "-c", "rm", SYSCTL1+"/sysctl.conf_orig"});
@@ -283,11 +282,11 @@ public class MainActivity extends PreferenceActivity {
                 if (unplug_wake.isChecked()) {
                     Settings.System.putInt(getContentResolver(), UNPLUG_WAKE,1);
                     Log.d("harsh_debug","harsh_unplug=>1");
-                    showhotbootDialog();
+                    ShowToast("Reboot is Required");
                 } else {
                     Settings.System.putInt(getContentResolver(), UNPLUG_WAKE,0);
                     Log.d("harsh_debug","harsh_unplug=>0");
-                    showhotbootDialog();
+                    ShowToast("Reboot is Required");
                 }
                 return false;
             }
@@ -303,11 +302,11 @@ public class MainActivity extends PreferenceActivity {
                 if (all_rotate.isChecked()) {
                     Settings.System.putInt(getContentResolver(), ALL_ROTATE,1);
                     Log.d("harsh_debug","harsh_rotate=>1");
-                    showhotbootDialog();
+                    ShowToast("Reboot is Required");
                 } else {
                     Settings.System.putInt(getContentResolver(), ALL_ROTATE,0);
                     Log.d("harsh_debug","harsh_rotate=>0");
-                    showhotbootDialog();
+                    ShowToast("Reboot is Required");
                 }
                 return false;
             }
@@ -330,7 +329,7 @@ public class MainActivity extends PreferenceActivity {
         }
     }
 
-    public void copyAssets(String script,String path) {
+    public void copyAssets(String script,String path,int mode) {
         AssetManager assetManager = getAssets();
         InputStream in = null;
         OutputStream out = null;
@@ -351,6 +350,7 @@ public class MainActivity extends PreferenceActivity {
             Process p = Runtime.getRuntime().exec(new String[] { "su", "-c", "cp", Environment.getExternalStorageDirectory().getPath()+"/"+script, path+"/"+script });
             p.waitFor();
             p = Runtime.getRuntime().exec(new String[] { "su", "-c", "rm", Environment.getExternalStorageDirectory().getPath()+"/"+script });
+            p = Runtime.getRuntime().exec(new String[] { "su", "-c", "chmod", Integer.toString(mode), path+"/"+script });
             p.waitFor();
         } catch (IOException e) {
             Log.e("harsh_debug", "Failed to move: " + script, e);
@@ -417,6 +417,10 @@ public class MainActivity extends PreferenceActivity {
         });
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    public void ShowToast(String msg) {
+        Toast.makeText(getApplicationContext(),msg,Toast.LENGTH_SHORT).show();
     }
 
 

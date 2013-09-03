@@ -1,4 +1,5 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/about" android:title="@string/info" android:showAsAction="ifRoom"></item>
+    <item android:id="@+id/hotboot" android:title="@string/hotboot"></item>
 </menu>
 
