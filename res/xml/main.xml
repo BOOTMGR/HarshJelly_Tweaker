@@ -2,18 +2,18 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory android:title="@string/basic" >
-        <CheckBoxPreference android:title="@string/crt_animation" android:key="crt_toggle"/>
-        <CheckBoxPreference android:title="@string/killer" android:key="killer_toggle"/>
-        <CheckBoxPreference android:title="@string/ascend_ring" android:key="ascending_toggle"/>
-        <CheckBoxPreference android:title="@string/unplug" android:key="unplug_wake"/>
-        <CheckBoxPreference android:title="@string/all_rot" android:key="allrot_toggle"/>
+        <CheckBoxPreference android:title="@string/crt_animation" android:key="crt_toggle" android:summary= "Old TV Effect while screen off"/>
+        <CheckBoxPreference android:title="@string/killer" android:key="killer_toggle" android:summary="Kills foreground app on Long pressing back key"/>
+        <CheckBoxPreference android:title="@string/ascend_ring" android:key="ascending_toggle" android:summary="Increasing Ringtone Volume"/>
+        <CheckBoxPreference android:title="@string/unplug" android:key="unplug_wake" android:summary="Turns screen on upon Disconnecting"/>
+        <CheckBoxPreference android:title="@string/all_rot" android:key="allrot_toggle" android:summary="Allows 360 Degree Rotation"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/lock" >
-        <CheckBoxPreference android:title="@string/aosp_vib" android:key="vib_toggle"/>
-        <CheckBoxPreference android:title="@string/aosp_oriet" android:key="rot_toggle"/>
+        <CheckBoxPreference android:title="@string/aosp_vib" android:key="vib_toggle" android:summary="Haptic feedback in AOSP Lockscreen"/>
+        <CheckBoxPreference android:title="@string/aosp_oriet" android:key="rot_toggle" android:summary="Allows rotation in Lockscreen"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/misc" >
-        <CheckBoxPreference android:title="@string/log" android:key="log_toggle"/>
-        <CheckBoxPreference android:title="@string/sysctl" android:key="sys_toggle"/>
+        <CheckBoxPreference android:title="@string/log" android:key="log_toggle" android:summary="Enables android logger (cocore kernel only)"/>
+        <CheckBoxPreference android:title="@string/sysctl" android:key="sys_toggle" android:summary="EXPERIMENTAL Sysctl Tweaks"/>
     </PreferenceCategory>
 </PreferenceScreen>
