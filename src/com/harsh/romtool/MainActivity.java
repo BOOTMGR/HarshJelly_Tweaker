@@ -33,6 +33,8 @@ public class MainActivity extends PreferenceActivity {
     private static final String ASCEND_RING = "harsh_ascend_ring";
     private static final String UNPLUG_WAKE = "harsh_unplug";
     private static final String ALL_ROTATE = "harsh_rotate";
+    private static final String NAVIGATION = "harsh_navigation";
+    private static final String IME = "harsh_ime";
     private static final String FBDELAY = "/sys/module/fbearlysuspend/parameters/fbdelay";
     private static final String FBDELAY_MS = "/sys/module/fbearlysuspend/parameters/fbdelay_ms";
     private static final String LOGGER = "/data/logger";
@@ -54,6 +56,8 @@ public class MainActivity extends PreferenceActivity {
         SetSysctlListner();
         SetUnplugListener();
         SetAllRotateListener();
+        SetNavListener();
+        SetIMEListener();
     }
 
     @Override
@@ -306,6 +310,46 @@ public class MainActivity extends PreferenceActivity {
                 } else {
                     Settings.System.putInt(getContentResolver(), ALL_ROTATE,0);
                     Log.d("harsh_debug","harsh_rotate=>0");
+                    ShowToast("Reboot is Required");
+                }
+                return false;
+            }
+        });
+    }
+
+    public void SetNavListener() {
+        final CheckBoxPreference cb = (CheckBoxPreference) findPreference("nav_toggle");
+        int val = Settings.System.getInt(getContentResolver(),NAVIGATION, 0);
+        cb.setChecked(val != 0);
+        cb.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
+            public boolean onPreferenceClick(Preference preference) {
+                if (cb.isChecked()) {
+                    Settings.System.putInt(getContentResolver(), NAVIGATION,1);
+                    Log.d("harsh_debug","harsh_navigation=>1");
+                    ShowToast("Reboot is Required");
+                } else {
+                    Settings.System.putInt(getContentResolver(), NAVIGATION,0);
+                    Log.d("harsh_debug","harsh_navigation=>0");
+                    ShowToast("Reboot is Required");
+                }
+                return false;
+            }
+        });
+    }
+
+    public void SetIMEListener() {
+        final CheckBoxPreference cb = (CheckBoxPreference) findPreference("ime_toggle");
+        int val = Settings.System.getInt(getContentResolver(),IME, 0);
+        cb.setChecked(val != 0);
+        cb.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
+            public boolean onPreferenceClick(Preference preference) {
+                if (cb.isChecked()) {
+                    Settings.System.putInt(getContentResolver(), IME,1);
+                    Log.d("harsh_debug","harsh_ime=>1");
+                    ShowToast("Reboot is Required");
+                } else {
+                    Settings.System.putInt(getContentResolver(), IME,0);
+                    Log.d("harsh_debug","harsh_ime=>0");
                     ShowToast("Reboot is Required");
                 }
                 return false;

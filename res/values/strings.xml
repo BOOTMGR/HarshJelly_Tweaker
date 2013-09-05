@@ -10,7 +10,7 @@
     <string name="info">About</string>
     <string name="rom">HarshJelly ROM</string>
     <string name="info_1">Tweaker</string>
-    <string name="info_2">1.1</string>
+    <string name="info_2">2.0</string>
     <string name="harshjelly_tweaker">HarshJelly Tweaker</string>
     <string name="harsh_panchal_mr_harsh_xda_develoers_com_">Harsh Panchal (mr.harsh@xda-develoers.com)</string>
     <string name="author">Developer:</string>
@@ -26,5 +26,9 @@
     <string name="cancel">Cancel</string>
     <string name="all_rot">Allow All Rotations</string>
     <string name="hotboot">Hotboot</string>
+    <string name="navigation">Show Navigationbar</string>
+    <string name="navigation_sum">Show onscreen navigation Keys</string>
+    <string name="ime">IME Switcher Notification</string>
+    <string name="ime_sum">Show IME Switcher icon in notification bar</string>
 
 </resources>
