@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -40,6 +41,7 @@ public class MainActivity extends PreferenceActivity {
     private static final String LOGGER = "/data/logger";
     private static final String SYSCTL1 = "/system/etc";
     private static final String INITD = "/system/etc/init.d";
+    private static final String FSYNC = "/sys/kernel/fsync/mode";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +60,7 @@ public class MainActivity extends PreferenceActivity {
         SetAllRotateListener();
         SetNavListener();
         SetIMEListener();
+        SetFSYNCListener();
     }
 
     @Override
@@ -357,6 +360,66 @@ public class MainActivity extends PreferenceActivity {
         });
     }
 
+    public void SetFSYNCListener() {
+        final CheckBoxPreference cb = (CheckBoxPreference) findPreference("fsync_toggle");
+        final File f = new File(FSYNC);
+        if(f.exists()) {
+            String out = new String();
+            try {
+                Process p = Runtime.getRuntime().exec(new String[]{"su", "-c", "system/bin/sh"});
+                DataOutputStream stdin = new DataOutputStream(p.getOutputStream());
+                stdin.writeBytes("head -1 /sys/kernel/fsync/mode\n");
+                InputStream stdout = p.getInputStream();
+                byte[] buffer = new byte[4096];
+                int read;
+                while(true){
+                    read = stdout.read(buffer);
+                    out += new String(buffer, 0, read);
+                    if(read<4096){
+                        break;
+                    }
+                }
+            } catch ( Exception e) {
+                ShowToast("Error Occured");
+                Log.e("harsh_debug","Failed reading sysfs",e);
+            }
+            int val = Integer.parseInt(Character.toString(out.charAt(0)));
+            cb.setChecked(val != 0);
+            cb.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
+                public boolean onPreferenceClick(Preference preference) {
+                    if (cb.isChecked()) {
+                        try {
+                            Process p = Runtime.getRuntime().exec(new String[] { "su", "-c", "echo 1 > ", FSYNC });
+                            p.waitFor();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Log.e("harsh_debug","Error writing sysfs");
+                        }
+                        mountSystemRW();
+                        copyAssets("05_fsync",INITD,777);
+                        Log.d("harsh_debug", "fsync=>1");
+                    } else {
+                        try {
+                            Process p = Runtime.getRuntime().exec(new String[] { "su", "-c", "echo 0 > ", FSYNC });
+                            p.waitFor();
+                            mountSystemRW();
+                            Runtime.getRuntime().exec(new String[] { "su", "-c", "rm", "/system/etc/init.d/05_fsync" });
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Log.e("harsh_debug","Error writing sysfs");
+                        }
+                        Log.d("harsh_debug", "fsync=>0");
+                    }
+                    return false;
+                }
+            });
+        }else{
+            cb.setSelectable(false);
+            ShowToast("FSYNC:Not Supported");
+            Log.e("harsh_debug","FSYNC:Unsupported Kernel");
+        }
+    }
+
     public void ClearSys() {
         mountSystemRW();
         Process process = null;
@@ -466,6 +529,5 @@ public class MainActivity extends PreferenceActivity {
     public void ShowToast(String msg) {
         Toast.makeText(getApplicationContext(),msg,Toast.LENGTH_SHORT).show();
     }
-
 
 }

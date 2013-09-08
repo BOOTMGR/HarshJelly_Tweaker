@@ -17,5 +17,6 @@
     <PreferenceCategory android:title="@string/misc" >
         <CheckBoxPreference android:title="@string/log" android:key="log_toggle" android:summary="Enables android logger (cocore kernel only)"/>
         <CheckBoxPreference android:title="@string/sysctl" android:key="sys_toggle" android:summary="EXPERIMENTAL Sysctl Tweaks"/>
+        <CheckBoxPreference android:title="@string/fsync" android:key="fsync_toggle" android:summary="@string/fsync_sum"/>
     </PreferenceCategory>
 </PreferenceScreen>

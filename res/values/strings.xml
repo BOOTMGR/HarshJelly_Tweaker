@@ -30,5 +30,6 @@
     <string name="navigation_sum">Show onscreen navigation Keys</string>
     <string name="ime">IME Switcher Notification</string>
     <string name="ime_sum">Show IME Switcher icon in notification bar</string>
-
+    <string name="fsync">Disable FSYNC</string>
+    <string name="fsync_sum">Disables fsync (if supported)</string>
 </resources>
