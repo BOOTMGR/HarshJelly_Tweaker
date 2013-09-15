@@ -32,4 +32,6 @@
     <string name="ime_sum">Show IME Switcher icon in notification bar</string>
     <string name="fsync">Disable FSYNC</string>
     <string name="fsync_sum">Disables fsync (if supported)</string>
+    <string name="scroll">Scrolling Cache</string>
+    <string name="scroll_sum">Enable Scrolling Cache</string>
 </resources>

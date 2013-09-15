@@ -36,6 +36,7 @@ public class MainActivity extends PreferenceActivity {
     private static final String ALL_ROTATE = "harsh_rotate";
     private static final String NAVIGATION = "harsh_navigation";
     private static final String IME = "harsh_ime";
+    private static final String SCROLL = "harsh_scroll";
     private static final String FBDELAY = "/sys/module/fbearlysuspend/parameters/fbdelay";
     private static final String FBDELAY_MS = "/sys/module/fbearlysuspend/parameters/fbdelay_ms";
     private static final String LOGGER = "/data/logger";
@@ -61,6 +62,7 @@ public class MainActivity extends PreferenceActivity {
         SetNavListener();
         SetIMEListener();
         SetFSYNCListener();
+        SetScrollListener();
     }
 
     @Override
@@ -420,6 +422,26 @@ public class MainActivity extends PreferenceActivity {
         }
     }
 
+    public void SetScrollListener() {
+        final CheckBoxPreference cb = (CheckBoxPreference) findPreference("scroll_toggle");
+        int val = Settings.System.getInt(getContentResolver(),SCROLL, 0);
+        cb.setChecked(val != 0);
+        cb.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
+            public boolean onPreferenceClick(Preference preference) {
+                if (cb.isChecked()) {
+                    Settings.System.putInt(getContentResolver(), SCROLL,1);
+                    Log.d("harsh_debug","harsh_scroll=>1");
+                    ShowToast("Reboot is Required");
+                } else {
+                    Settings.System.putInt(getContentResolver(), SCROLL,0);
+                    Log.d("harsh_debug","harsh_scroll=>0");
+                    ShowToast("Reboot is Required");
+                }
+                return false;
+            }
+        });
+    }
+
     public void ClearSys() {
         mountSystemRW();
         Process process = null;
@@ -529,5 +551,4 @@ public class MainActivity extends PreferenceActivity {
     public void ShowToast(String msg) {
         Toast.makeText(getApplicationContext(),msg,Toast.LENGTH_SHORT).show();
     }
-
 }
