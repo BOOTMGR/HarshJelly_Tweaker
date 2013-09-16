@@ -18,7 +18,8 @@
         android:theme="@android:style/Theme.Holo" >
         <activity
             android:name="com.harsh.romtool.MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -27,7 +28,8 @@
         </activity>
         <activity
             android:name="com.harsh.romtool.About"
-            android:label="@string/info" >
+            android:label="@string/info"
+            android:screenOrientation="portrait" >
         </activity>
     </application>
     
