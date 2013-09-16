@@ -105,7 +105,7 @@ public class MainActivity extends PreferenceActivity {
                         mountSystemRW();
                         copyAssets("03_crt",INITD,777);
                     } catch (IOException e) {
-                        ShowToast("No SU Rights",true);
+                        ShowToast("No SU Rights");
                         Log.e("harsh_debug","Failed to get SU Rights or Unsupported Kernel");
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -121,7 +121,7 @@ public class MainActivity extends PreferenceActivity {
                         mountSystemRW();
                         copyAssets("99_crtoff",INITD,777);
                     } catch (IOException e) {
-                        ShowToast("No SU Rights or unsupported Kernel",true);
+                        ShowToast("No SU Rights or unsupported Kernel");
                         Log.e("harsh_debug","Failed to get SU Rights or Unsupported Kernel");
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -294,11 +294,11 @@ public class MainActivity extends PreferenceActivity {
                 if (unplug_wake.isChecked()) {
                     Settings.System.putInt(getContentResolver(), UNPLUG_WAKE,1);
                     Log.d("harsh_debug","harsh_unplug=>1");
-                    ShowToast("Reboot is Required",false);
+                    ShowToast("Reboot is Required");
                 } else {
                     Settings.System.putInt(getContentResolver(), UNPLUG_WAKE,0);
                     Log.d("harsh_debug","harsh_unplug=>0");
-                    ShowToast("Reboot is Required",false);
+                    ShowToast("Reboot is Required");
                 }
                 return false;
             }
@@ -314,11 +314,11 @@ public class MainActivity extends PreferenceActivity {
                 if (all_rotate.isChecked()) {
                     Settings.System.putInt(getContentResolver(), ALL_ROTATE,1);
                     Log.d("harsh_debug","harsh_rotate=>1");
-                    ShowToast("Reboot is Required",false);
+                    ShowToast("Reboot is Required");
                 } else {
                     Settings.System.putInt(getContentResolver(), ALL_ROTATE,0);
                     Log.d("harsh_debug","harsh_rotate=>0");
-                    ShowToast("Reboot is Required",false);
+                    ShowToast("Reboot is Required");
                 }
                 return false;
             }
@@ -334,11 +334,11 @@ public class MainActivity extends PreferenceActivity {
                 if (cb.isChecked()) {
                     Settings.System.putInt(getContentResolver(), NAVIGATION,1);
                     Log.d("harsh_debug","harsh_navigation=>1");
-                    ShowToast("Reboot is Required",false);
+                    ShowToast("Reboot is Required");
                 } else {
                     Settings.System.putInt(getContentResolver(), NAVIGATION,0);
                     Log.d("harsh_debug","harsh_navigation=>0");
-                    ShowToast("Reboot is Required",false);
+                    ShowToast("Reboot is Required");
                 }
                 return false;
             }
@@ -354,11 +354,11 @@ public class MainActivity extends PreferenceActivity {
                 if (cb.isChecked()) {
                     Settings.System.putInt(getContentResolver(), IME,1);
                     Log.d("harsh_debug","harsh_ime=>1");
-                    ShowToast("Reboot is Required",false);
+                    ShowToast("Reboot is Required");
                 } else {
                     Settings.System.putInt(getContentResolver(), IME,0);
                     Log.d("harsh_debug","harsh_ime=>0");
-                    ShowToast("Reboot is Required",false);
+                    ShowToast("Reboot is Required");
                 }
                 return false;
             }
@@ -385,7 +385,7 @@ public class MainActivity extends PreferenceActivity {
                     }
                 }
             } catch ( Exception e) {
-                ShowToast("Error Occured",true);
+                ShowToast("Error Occured");
                 Log.e("harsh_debug","Failed reading sysfs",e);
             }
             int val = Integer.parseInt(Character.toString(out.charAt(0)));
@@ -419,8 +419,8 @@ public class MainActivity extends PreferenceActivity {
                 }
             });
         }else{
-            cb.setSelectable(false);
-            ShowToast("FSYNC:Not Supported",true);
+            cb.setEnabled(false);
+            cb.setSummary("Unsupported kernel");
             Log.e("harsh_debug","FSYNC:Unsupported Kernel");
         }
     }
@@ -434,11 +434,11 @@ public class MainActivity extends PreferenceActivity {
                 if (cb.isChecked()) {
                     Settings.System.putInt(getContentResolver(), SCROLL,1);
                     Log.d("harsh_debug","harsh_scroll=>1");
-                    ShowToast("Reboot is Required",false);
+                    ShowToast("Reboot is Required");
                 } else {
                     Settings.System.putInt(getContentResolver(), SCROLL,0);
                     Log.d("harsh_debug","harsh_scroll=>0");
-                    ShowToast("Reboot is Required",false);
+                    ShowToast("Reboot is Required");
                 }
                 return false;
             }
@@ -551,20 +551,7 @@ public class MainActivity extends PreferenceActivity {
         dialog.show();
     }
 
-    public void ShowToast(String msg,boolean critical) {
-        if (!critical) {
-            Toast.makeText(getApplicationContext(),msg,Toast.LENGTH_SHORT).show();
-        } else {
-            Toast t = new Toast(getApplicationContext());
-            TextView tv = new TextView(getApplicationContext());
-            tv.setBackgroundColor(Color.WHITE);
-            tv.setTextColor(Color.RED);
-            tv.setTextSize(20);
-            tv.setText(msg);
-            tv.setGravity(Gravity.CENTER);
-            t.setView(tv);
-            t.setDuration(Toast.LENGTH_SHORT);
-            t.show();
-        }
+    public void ShowToast(String msg) {
+        Toast.makeText(getApplicationContext(),msg,Toast.LENGTH_SHORT).show();
     }
 }
