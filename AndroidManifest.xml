@@ -31,6 +31,7 @@
             android:label="@string/info"
             android:screenOrientation="portrait" >
         </activity>
+        <activity android:name=".Help" />
     </application>
     
 

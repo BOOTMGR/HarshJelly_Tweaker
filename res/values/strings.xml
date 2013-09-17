@@ -34,4 +34,5 @@
     <string name="fsync_sum">Disables fsync (if supported)</string>
     <string name="scroll">Scrolling Cache</string>
     <string name="scroll_sum">Enable Scrolling Cache</string>
+    <string name="help">Help</string>
 </resources>

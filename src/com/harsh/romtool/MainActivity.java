@@ -83,6 +83,9 @@ public class MainActivity extends PreferenceActivity {
             case R.id.hotboot:
                 showhotbootDialog();
                 return true;
+            case R.id.help:
+                startActivity(new Intent(this, Help.class));
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
