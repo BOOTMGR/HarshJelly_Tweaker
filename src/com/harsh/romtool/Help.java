@@ -5,9 +5,6 @@ import android.os.Bundle;
 import android.text.Html;
 import android.widget.TextView;
 
-/**
- * Created by Harsh Panchal on 9/17/13.
- */
 public class Help extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

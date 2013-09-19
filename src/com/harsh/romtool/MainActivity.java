@@ -1,24 +1,19 @@
 package com.harsh.romtool;
 
 
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.AssetManager;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.provider.Settings;
-import android.text.Html;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.DataOutputStream;
@@ -27,6 +22,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+
 
 public class MainActivity extends PreferenceActivity {
 
@@ -100,35 +96,15 @@ public class MainActivity extends PreferenceActivity {
                 if (crt_toggle.isChecked()) {
                     Settings.System.putInt(getContentResolver(), CRT_ANIM, 1);
                     Log.d("harsh_debug","harsh_crt=>1");
-                    try {
-                        Process p = Runtime.getRuntime().exec(new String[] { "su", "-c", "echo 1 > ", FBDELAY });
-                        p.waitFor();
-                        p = Runtime.getRuntime().exec(new String[] { "su", "-c", "echo 350 > ", FBDELAY_MS });
-                        p.waitFor();
-                        mountSystemRW();
-                        copyAssets("03_crt",INITD,777);
-                    } catch (IOException e) {
-                        ShowToast("No SU Rights");
-                        Log.e("harsh_debug","Failed to get SU Rights or Unsupported Kernel");
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    new SU().execute("echo 1 > "+FBDELAY,"echo 350 > "+FBDELAY_MS);
+                    mountSystemRW();
+                    copyAssets("03_crt",INITD,777);
                 } else {
                     Settings.System.putInt(getContentResolver(), CRT_ANIM, 0);
                     Log.d("harsh_debug","harsh_crt=>0");
-                    try {
-                        Process p = Runtime.getRuntime().exec(new String[] { "su", "-c", "echo 0 > ", FBDELAY });
-                        p.waitFor();
-                        p = Runtime.getRuntime().exec(new String[] { "su", "-c", "echo 0 > ", FBDELAY_MS });
-                        p.waitFor();
-                        mountSystemRW();
-                        copyAssets("99_crtoff",INITD,777);
-                    } catch (IOException e) {
-                        ShowToast("No SU Rights or unsupported Kernel");
-                        Log.e("harsh_debug","Failed to get SU Rights or Unsupported Kernel");
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    new SU().execute("echo 0 > "+FBDELAY,"echo 0 > "+FBDELAY_MS);
+                    mountSystemRW();
+                    copyAssets("99_crtoff",INITD,777);
                 }
                 return false;
             }
@@ -214,21 +190,10 @@ public class MainActivity extends PreferenceActivity {
         logger.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
             public boolean onPreferenceClick(Preference preference) {
                 if (logger.isChecked()) {
-                    try {
-                        Process p = Runtime.getRuntime().exec(new String[] {"su","-c","touch",LOGGER});
-                        p.waitFor();
-                        Runtime.getRuntime().exec(new String[]{"su", "-c", "chmod", "777", LOGGER});
-                    } catch (Exception e) {
-                        Log.e("harsh_debug","Failed to create logger", e);
-                    }
+                    new SU().execute("touch "+LOGGER,"chmod 777 "+LOGGER);
                     Log.d("harsh_debug","logger enabled");
                 } else {
-                    try {
-                        Process p = Runtime.getRuntime().exec(new String[] {"su","-c","rm",LOGGER});
-                        p.waitFor();
-                    } catch (Exception e) {
-                        Log.e("harsh_debug","Failed to remove logger", e);
-                    }
+                    new SU().execute("rm "+LOGGER);
                     Log.d("harsh_debug","logger disabled");
                 }
                 return false;
@@ -261,25 +226,13 @@ public class MainActivity extends PreferenceActivity {
                     mountSystemRW();
                     copyAssets("04_sysctl",INITD,777);
                     copyAssets("sysctl.conf",SYSCTL1,644);
-                    try {
-                        Runtime.getRuntime().exec(new String[]{"su", "-c", "sysctl", "-p"});
-                    } catch (Exception e) {
-                        Log.e("harsh_debug", "Failed to execute process", e);
-                    }
+                    new SU().execute("sysctl -p");
                     Log.d("harsh_debug","sysctl tweaks enabled");
                 } else {
                     mountSystemRW();
                     ClearSys();
                     copyAssets("sysctl.conf_orig",SYSCTL1,644);
-                    try {
-                        Runtime.getRuntime().exec(new String[]{"su", "-c", "cp", SYSCTL1+"/sysctl.conf_orig" , SYSCTL1+"/sysctl.conf"});
-                        Runtime.getRuntime().exec(new String[]{"su", "-c", "rm", SYSCTL1+"/sysctl.conf_orig"});
-                        Runtime.getRuntime().exec(new String[]{"su", "-c", "chmod", "644", SYSCTL1+"/sysctl.conf"});
-                        Runtime.getRuntime().exec(new String[]{"su", "-c", "sysctl", "-p"});
-                    } catch (IOException e) {
-                        Log.e("harsh_debug", "Error in Setting permission", e);
-                        e.printStackTrace();
-                    }
+                    new SU().execute("cp -f /system/etc/sysctl.conf_orig /system/etc/sysctl.conf","rm /system/etc/sysctl.conf_orig","sysctl -p");
                     ClearSys();
                     Log.d("harsh_debug","sysctl tweaks disabled");
                 }
@@ -396,26 +349,12 @@ public class MainActivity extends PreferenceActivity {
             cb.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
                 public boolean onPreferenceClick(Preference preference) {
                     if (cb.isChecked()) {
-                        try {
-                            Process p = Runtime.getRuntime().exec(new String[] { "su", "-c", "echo 1 > ", FSYNC });
-                            p.waitFor();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            Log.e("harsh_debug","Error writing sysfs");
-                        }
+                        new SU().execute("echo 1 > "+FSYNC);
                         mountSystemRW();
-                        copyAssets("05_fsync",INITD,777);
+                        copyAssets("02_fsync",INITD,777);
                         Log.d("harsh_debug", "fsync=>1");
                     } else {
-                        try {
-                            Process p = Runtime.getRuntime().exec(new String[] { "su", "-c", "echo 0 > ", FSYNC });
-                            p.waitFor();
-                            mountSystemRW();
-                            Runtime.getRuntime().exec(new String[] { "su", "-c", "rm", "/system/etc/init.d/05_fsync" });
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            Log.e("harsh_debug","Error writing sysfs");
-                        }
+                        new SU().execute("echo 0 > "+FSYNC,"rm /system/etc/init.d/02_fsync");
                         Log.d("harsh_debug", "fsync=>0");
                     }
                     return false;
@@ -450,18 +389,7 @@ public class MainActivity extends PreferenceActivity {
 
     public void ClearSys() {
         mountSystemRW();
-        Process process = null;
-        try {
-            process = new ProcessBuilder().command("su" ,"-c" ,"rm", "/system/etc/init.d/04_sysctl").start();
-            process.waitFor();
-            process = new ProcessBuilder().command("su", "-c", "rm", "/system/etc/sysctl.conf").start();
-            process.waitFor();
-            process.destroy();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        new SU().execute("rm /system/etc/init.d/04_sysctl", "rm /system/etc/sysctl.conf");
     }
 
     public void copyAssets(String script,String path,int mode) {
@@ -482,7 +410,7 @@ public class MainActivity extends PreferenceActivity {
             Log.e("harsh_debug", "Failed to handle: " + script, e);
         }
         try {
-            Process p = Runtime.getRuntime().exec(new String[] { "su", "-c", "cp", Environment.getExternalStorageDirectory().getPath()+"/"+script, path+"/"+script });
+            Process p = Runtime.getRuntime().exec(new String[] { "su", "-c", "cp", "-f", Environment.getExternalStorageDirectory().getPath()+"/"+script, path+"/"+script });
             p.waitFor();
             p = Runtime.getRuntime().exec(new String[] { "su", "-c", "rm", Environment.getExternalStorageDirectory().getPath()+"/"+script });
             p = Runtime.getRuntime().exec(new String[] { "su", "-c", "chmod", Integer.toString(mode), path+"/"+script });
@@ -525,11 +453,7 @@ public class MainActivity extends PreferenceActivity {
     }
 
     public void mountSystemRW() {
-        try {
-            Runtime.getRuntime().exec(new String[] { "su", "-c", "mount", "-o", "remount,rw", "/dev/block/mmcblk0p3", "/system" });
-        } catch (IOException e) {
-            Log.e("harsh_debug", "Failed to mount system as R/W", e);
-        }
+        new SU().execute("mount -o remount,rw /dev/block/mmcblk0p3 /system");
     }
 
     public void showhotbootDialog() {
@@ -539,12 +463,7 @@ public class MainActivity extends PreferenceActivity {
         builder.setCancelable(false);
         builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                Process process;
-                try {
-                    process = new ProcessBuilder().command("su" ,"-c" ,"pkill", "-f", "system_server").start();
-                } catch (IOException e) {
-                    Log.e("harsh_debug", "Failed to HotBoot", e);
-                }
+                new SU().execute("pkill -f system_server");
             }
         });
         builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
