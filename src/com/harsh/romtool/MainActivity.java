@@ -1,3 +1,7 @@
+/*
+ *      HarshJelly Tweaker - An app to Tweak HarshJelly ROM
+ *      Author : Harsh Panchal <panchal.harsh18@gmail.com, mr.harsh@xda-developers.com>
+ */
 package com.harsh.romtool;
 
 
@@ -203,22 +207,8 @@ public class MainActivity extends PreferenceActivity {
 
     public void SetSysctlListner() {
         final CheckBoxPreference sysctl_switch = (CheckBoxPreference) findPreference("sys_toggle");
-        int var1=0;
-        int var2=0;
-        try {
-            Process process = new ProcessBuilder().command("su" ,"-c" ,"ls", SYSCTL1, "|", "grep", "-q", "sysctl.conf").start();
-            process.waitFor();
-            var1 = process.exitValue();
-            process.destroy();
-            Process process2 = new ProcessBuilder().command("su" ,"-c" ,"ls", INITD, "|", "grep", "-q", "04_sysctl").start();
-            process2.waitFor();
-            var2 = process2.exitValue();
-            process2.destroy();
-        } catch (IOException e) {
-            Log.e("harsh_debug", "Failed to execute process", e);
-        } catch (InterruptedException e) {
-            Log.e("harsh_debug", "Process Interuppted", e);
-        }
+        int var1 = new Utils().SU_retVal("ls "+SYSCTL1+" | grep -q sysctl.conf");
+        int var2 = new Utils().SU_retVal("ls "+INITD+" | grep -q 04_sysctl");
         sysctl_switch.setChecked(var1 == 0 && var2 == 0);
         sysctl_switch.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
             public boolean onPreferenceClick(Preference preference) {
@@ -325,25 +315,7 @@ public class MainActivity extends PreferenceActivity {
         final CheckBoxPreference cb = (CheckBoxPreference) findPreference("fsync_toggle");
         final File f = new File(FSYNC);
         if(f.exists()) {
-            String out = new String();
-            try {
-                Process p = Runtime.getRuntime().exec(new String[]{"su", "-c", "system/bin/sh"});
-                DataOutputStream stdin = new DataOutputStream(p.getOutputStream());
-                stdin.writeBytes("head -1 /sys/kernel/fsync/mode\n");
-                InputStream stdout = p.getInputStream();
-                byte[] buffer = new byte[4096];
-                int read;
-                while(true){
-                    read = stdout.read(buffer);
-                    out += new String(buffer, 0, read);
-                    if(read<4096){
-                        break;
-                    }
-                }
-            } catch ( Exception e) {
-                ShowToast("Error Occured");
-                Log.e("harsh_debug","Failed reading sysfs",e);
-            }
+            String out = new Utils().SU_wop("head -1 /sys/kernel/fsync/mode");
             int val = Integer.parseInt(Character.toString(out.charAt(0)));
             cb.setChecked(val != 0);
             cb.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
