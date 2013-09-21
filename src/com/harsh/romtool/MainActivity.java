@@ -101,14 +101,14 @@ public class MainActivity extends PreferenceActivity {
                     Settings.System.putInt(getContentResolver(), CRT_ANIM, 1);
                     Log.d("harsh_debug","harsh_crt=>1");
                     new SU().execute("echo 1 > "+FBDELAY,"echo 350 > "+FBDELAY_MS);
-                    mountSystemRW();
-                    copyAssets("03_crt",INITD,777);
+                    new Utils().mountSystemRW();
+                    new Utils().copyAssets("03_crt",INITD,777,getApplicationContext());
                 } else {
                     Settings.System.putInt(getContentResolver(), CRT_ANIM, 0);
                     Log.d("harsh_debug","harsh_crt=>0");
                     new SU().execute("echo 0 > "+FBDELAY,"echo 0 > "+FBDELAY_MS);
-                    mountSystemRW();
-                    copyAssets("99_crtoff",INITD,777);
+                    new Utils().mountSystemRW();
+                    new Utils().copyAssets("99_crtoff",INITD,777,getApplicationContext());
                 }
                 return false;
             }
@@ -213,15 +213,15 @@ public class MainActivity extends PreferenceActivity {
         sysctl_switch.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
             public boolean onPreferenceClick(Preference preference) {
                 if (sysctl_switch.isChecked()) {
-                    mountSystemRW();
-                    copyAssets("04_sysctl",INITD,777);
-                    copyAssets("sysctl.conf",SYSCTL1,644);
+                    new Utils().mountSystemRW();
+                    new Utils().copyAssets("04_sysctl",INITD,777,getApplicationContext());
+                    new Utils().copyAssets("sysctl.conf",SYSCTL1,644,getApplicationContext());
                     new SU().execute("sysctl -p");
                     Log.d("harsh_debug","sysctl tweaks enabled");
                 } else {
-                    mountSystemRW();
+                    new Utils().mountSystemRW();
                     ClearSys();
-                    copyAssets("sysctl.conf_orig",SYSCTL1,644);
+                    new Utils().copyAssets("sysctl.conf_orig",SYSCTL1,644,getApplicationContext());
                     new SU().execute("cp -f /system/etc/sysctl.conf_orig /system/etc/sysctl.conf","rm /system/etc/sysctl.conf_orig","sysctl -p");
                     ClearSys();
                     Log.d("harsh_debug","sysctl tweaks disabled");
@@ -322,8 +322,8 @@ public class MainActivity extends PreferenceActivity {
                 public boolean onPreferenceClick(Preference preference) {
                     if (cb.isChecked()) {
                         new SU().execute("echo 1 > "+FSYNC);
-                        mountSystemRW();
-                        copyAssets("02_fsync",INITD,777);
+                        new Utils().mountSystemRW();
+                        new Utils().copyAssets("02_fsync",INITD,777,getApplicationContext());
                         Log.d("harsh_debug", "fsync=>1");
                     } else {
                         new SU().execute("echo 0 > "+FSYNC,"rm /system/etc/init.d/02_fsync");
@@ -360,72 +360,8 @@ public class MainActivity extends PreferenceActivity {
     }
 
     public void ClearSys() {
-        mountSystemRW();
+        new Utils().mountSystemRW();
         new SU().execute("rm /system/etc/init.d/04_sysctl", "rm /system/etc/sysctl.conf");
-    }
-
-    public void copyAssets(String script,String path,int mode) {
-        AssetManager assetManager = getAssets();
-        InputStream in = null;
-        OutputStream out = null;
-        try {
-            in = assetManager.open(script);
-            File outFile = new File(Environment.getExternalStorageDirectory().getPath(), script);
-            out = new FileOutputStream(outFile);
-            copyFile(in, out);
-            in.close();
-            in = null;
-            out.flush();
-            out.close();
-            out = null;
-        } catch(IOException e) {
-            Log.e("harsh_debug", "Failed to handle: " + script, e);
-        }
-        try {
-            Process p = Runtime.getRuntime().exec(new String[] { "su", "-c", "cp", "-f", Environment.getExternalStorageDirectory().getPath()+"/"+script, path+"/"+script });
-            p.waitFor();
-            p = Runtime.getRuntime().exec(new String[] { "su", "-c", "rm", Environment.getExternalStorageDirectory().getPath()+"/"+script });
-            p = Runtime.getRuntime().exec(new String[] { "su", "-c", "chmod", Integer.toString(mode), path+"/"+script });
-            p.waitFor();
-        } catch (IOException e) {
-            Log.e("harsh_debug", "Failed to move: " + script, e);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        if(script.equals("03_crt") || script.equals("99_crtoff")){
-            if(script.equals("03_crt")) {
-                try {
-                    Process p = Runtime.getRuntime().exec(new String[] { "su", "-c", "rm", "/system/etc/init.d/99_crtoff" });
-                    p.waitFor();
-                } catch (IOException e) {
-                    Log.e("harsh_debug", "Failed to remove: " + script, e);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            else {
-                try {
-                    Process p = Runtime.getRuntime().exec(new String[] { "su", "-c", "rm", "/system/etc/init.d/03_crt" });
-                    p.waitFor();
-                } catch (IOException e) {
-                    Log.e("harsh_debug", "Failed to remove: " + script, e);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    public void copyFile(InputStream in, OutputStream out) throws IOException {
-        byte[] buffer = new byte[1024];
-        int read;
-        while((read = in.read(buffer)) != -1){
-            out.write(buffer, 0, read);
-        }
-    }
-
-    public void mountSystemRW() {
-        new SU().execute("mount -o remount,rw /dev/block/mmcblk0p3 /system");
     }
 
     public void showhotbootDialog() {

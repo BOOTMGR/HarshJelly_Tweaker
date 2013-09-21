@@ -6,17 +6,23 @@
 package com.harsh.romtool;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.res.AssetManager;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 class Utils {
-    // SU_wop : Executes shell command as superuser and return the output as a String
-    // Usage  : new Utils().SU_wop("command")
+// SU_wop : Executes shell command as superuser and return the output as a String
+// Usage  : new Utils().SU_wop("command")
     public String SU_wop(String cmds) {
 //     FLAG:0x2
         String out = null;
@@ -48,9 +54,8 @@ class Utils {
         }
         return out;
     }
-    // SU_retVal : Executes shell command as superuser and return the value of command executed
-    //             It'll return either 0 or 1
-    // Usage  : new Utils().SU_retVal("command")
+// SU_retVal : Executes shell command as superuser and return the value of command executed.It'll return either 0 or 1
+// Usage  : new Utils().SU_retVal("command")
     public int SU_retVal(String cmd) {
 //     FLAG:0x3
         Process process = null;
@@ -71,6 +76,46 @@ class Utils {
             Log.e("harsh_debug", "Error executing SU command, flag:0x3");
         }
         return process.exitValue();
+    }
+// SU_retVal : Executes shell command as superuser and return the value of command executed.It'll return either 0 or 1
+// Usage  : new Utils().SU_retVal("command")
+    public void copyAssets(String script,String path,int mode,Context context) {
+        AssetManager assetManager = context.getAssets();
+        InputStream in = null;
+        OutputStream out = null;
+        try {
+            in = assetManager.open(script);
+            File outFile = new File(Environment.getExternalStorageDirectory().getPath(), script);
+            out = new FileOutputStream(outFile);
+            copyFile(in, out);
+            in.close();
+            in = null;
+            out.flush();
+            out.close();
+            out = null;
+        } catch(IOException e) {
+            Log.e("harsh_debug", "Failed to handle: " + script, e);
+        }
+        new SU().execute("cp -f "+Environment.getExternalStorageDirectory().getPath()+"/"+script+" "+path+"/"+script, "rm "+Environment.getExternalStorageDirectory().getPath()+"/"+script, "chmod "+Integer.toString(mode)+" "+path+"/"+script);
+        if(script.equals("03_crt") || script.equals("99_crtoff")){
+            if(script.equals("03_crt"))
+                new SU().execute("rm /system/etc/init.d/99_crtoff");
+            else
+                new SU().execute("rm /system/etc/init.d/03_crt");
+        }
+    }
+
+    public void copyFile(InputStream in, OutputStream out) throws IOException {
+        byte[] buffer = new byte[1024];
+        int read;
+        while((read = in.read(buffer)) != -1){
+            out.write(buffer, 0, read);
+        }
+    }
+// mountSystemRW : Mount /system as R/W for Janice (only)
+// Usage  : new Utils().mountSystemRW()
+    public void mountSystemRW() {
+        new SU().execute("mount -o remount,rw /dev/block/mmcblk0p3 /system");
     }
 }
 // SU : This Asynctask class Executes shell commands as Superuser in background
