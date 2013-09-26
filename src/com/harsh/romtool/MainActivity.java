@@ -8,9 +8,7 @@ package com.harsh.romtool;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.AssetManager;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
@@ -20,12 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 
 public class MainActivity extends PreferenceActivity {
@@ -47,6 +40,7 @@ public class MainActivity extends PreferenceActivity {
     private static final String SYSCTL1 = "/system/etc";
     private static final String INITD = "/system/etc/init.d";
     private static final String FSYNC = "/sys/kernel/fsync/mode";
+    private static final String HEADSET = "harsh_volume";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +61,7 @@ public class MainActivity extends PreferenceActivity {
         SetIMEListener();
         SetFSYNCListener();
         SetScrollListener();
+        SetHeadsetWarningListener();
     }
 
     @Override
@@ -214,6 +209,7 @@ public class MainActivity extends PreferenceActivity {
             public boolean onPreferenceClick(Preference preference) {
                 if (sysctl_switch.isChecked()) {
                     new Utils().mountSystemRW();
+                    showDialog("Warning","This tweaks are EXPERIMENTAL and their effects are unknown.They may or may not affect system performance.");
                     new Utils().copyAssets("04_sysctl",INITD,777,getApplicationContext());
                     new Utils().copyAssets("sysctl.conf",SYSCTL1,644,getApplicationContext());
                     new SU().execute("sysctl -p");
@@ -359,6 +355,25 @@ public class MainActivity extends PreferenceActivity {
         });
     }
 
+    public void SetHeadsetWarningListener() {
+        final CheckBoxPreference cb = (CheckBoxPreference) findPreference("hs_toggle");
+        int val = Settings.System.getInt(getContentResolver(),HEADSET, 0);
+        cb.setChecked(val != 0);
+        cb.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
+            public boolean onPreferenceClick(Preference preference) {
+                if (cb.isChecked()) {
+                    Settings.System.putInt(getContentResolver(), HEADSET,1);
+                    Log.d("harsh_debug","harsh_volume=>1");
+                } else {
+                    Settings.System.putInt(getContentResolver(), HEADSET,0);
+                    showDialog("Warning...","Listening to Loud music for longer time can damage your ear and lead to hear loss.");
+                    Log.d("harsh_debug","harsh_volume=>0");
+                }
+                return false;
+            }
+        });
+    }
+
     public void ClearSys() {
         new Utils().mountSystemRW();
         new SU().execute("rm /system/etc/init.d/04_sysctl", "rm /system/etc/sysctl.conf");
@@ -375,6 +390,17 @@ public class MainActivity extends PreferenceActivity {
             }
         });
         builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {}
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+    public void showDialog(String title, String msg) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setTitle(title);
+        builder.setMessage(msg);
+        builder.setCancelable(false);
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {}
         });
         AlertDialog dialog = builder.create();

@@ -21,7 +21,7 @@
     <string name="misc">Miscellaneous Tweaks</string>
     <string name="unplug">Wake on Unplug</string>
     <string name="information">Information</string>
-    <string name="hotboot_msg">Changes will take only Effect after Hotboot.Do you want to Hotboot now?</string>
+    <string name="hotboot_msg">Do you want to Hotboot now?</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="all_rot">Allow All Rotations</string>
@@ -34,5 +34,7 @@
     <string name="fsync_sum">Disables fsync (if supported)</string>
     <string name="scroll">Scrolling Cache</string>
     <string name="scroll_sum">Enable Scrolling Cache</string>
+    <string name="headset">Safe Volume Warning</string>
+    <string name="headset_sum">Notifies user about risk of Ear damage on high volume</string>
     <string name="help">Help</string>
 </resources>
