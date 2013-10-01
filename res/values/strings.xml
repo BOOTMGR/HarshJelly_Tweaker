@@ -20,7 +20,7 @@
     <string name="lock">LockScreen Tweaks</string>
     <string name="misc">Miscellaneous Tweaks</string>
     <string name="unplug">Wake on Unplug</string>
-    <string name="information">Information</string>
+    <string name="warning">Warning...</string>
     <string name="hotboot_msg">Do you want to Hotboot now?</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
@@ -37,4 +37,6 @@
     <string name="headset">Safe Volume Warning</string>
     <string name="headset_sum">Notifies user about risk of Ear damage on high volume</string>
     <string name="help">Help</string>
+    <string name="reset">Reset to Defaults</string>
+    <string name="rest_to_def">Are sure want to switch to default Settings?</string>
 </resources>

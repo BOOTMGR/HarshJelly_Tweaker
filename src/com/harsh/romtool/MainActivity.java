@@ -42,6 +42,7 @@ public class MainActivity extends PreferenceActivity {
     private static final String FSYNC = "/sys/kernel/fsync/mode";
     private static final String HEADSET = "harsh_volume";
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,6 +82,9 @@ public class MainActivity extends PreferenceActivity {
             case R.id.help:
                 startActivity(new Intent(this, Help.class));
                 return true;
+            case R.id.reset:
+                ResetToDefaults();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -88,26 +92,33 @@ public class MainActivity extends PreferenceActivity {
 
     public void SetCRTListner() {
         final CheckBoxPreference crt_toggle = (CheckBoxPreference) findPreference("crt_toggle");
-        int crt = Settings.System.getInt(getContentResolver(),CRT_ANIM, 0);
-        crt_toggle.setChecked(crt != 0);
-        crt_toggle.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
-            public boolean onPreferenceClick(Preference preference) {
-                if (crt_toggle.isChecked()) {
-                    Settings.System.putInt(getContentResolver(), CRT_ANIM, 1);
-                    Log.d("harsh_debug","harsh_crt=>1");
-                    new SU().execute("echo 1 > "+FBDELAY,"echo 350 > "+FBDELAY_MS);
-                    new Utils().mountSystemRW();
-                    new Utils().copyAssets("03_crt",INITD,777,getApplicationContext());
-                } else {
-                    Settings.System.putInt(getContentResolver(), CRT_ANIM, 0);
-                    Log.d("harsh_debug","harsh_crt=>0");
-                    new SU().execute("echo 0 > "+FBDELAY,"echo 0 > "+FBDELAY_MS);
-                    new Utils().mountSystemRW();
-                    new Utils().copyAssets("99_crtoff",INITD,777,getApplicationContext());
+        final File f = new File(FBDELAY);
+        if(f.exists()) {
+            int crt = Settings.System.getInt(getContentResolver(),CRT_ANIM, 0);
+            crt_toggle.setChecked(crt != 0);
+            crt_toggle.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
+                public boolean onPreferenceClick(Preference preference) {
+                    if (crt_toggle.isChecked()) {
+                        Settings.System.putInt(getContentResolver(), CRT_ANIM, 1);
+                        Log.d("harsh_debug","harsh_crt=>1");
+                        new SU().execute("echo 1 > "+FBDELAY,"echo 350 > "+FBDELAY_MS);
+                        new Utils().mountSystemRW();
+                        new Utils().copyAssets("03_crt",INITD,777,getApplicationContext());
+                    } else {
+                        Settings.System.putInt(getContentResolver(), CRT_ANIM, 0);
+                        Log.d("harsh_debug","harsh_crt=>0");
+                        new SU().execute("echo 0 > "+FBDELAY,"echo 0 > "+FBDELAY_MS);
+                        new Utils().mountSystemRW();
+                        new Utils().copyAssets("99_crtoff",INITD,777,getApplicationContext());
+                    }
+                    return false;
                 }
-                return false;
-            }
-        });
+            });
+        } else {
+            crt_toggle.setEnabled(false);
+            crt_toggle.setSummary("Unsupported kernel");
+            Log.e("harsh_debug","CRT Animation:Unsupported Kernel");
+        }
     }
 
     public void SetKillerListner() {
@@ -382,7 +393,7 @@ public class MainActivity extends PreferenceActivity {
     public void showhotbootDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setMessage(R.string.hotboot_msg);
-        builder.setTitle(R.string.information);
+        builder.setTitle(R.string.warning);
         builder.setCancelable(false);
         builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
@@ -409,5 +420,48 @@ public class MainActivity extends PreferenceActivity {
 
     public void ShowToast(String msg) {
         Toast.makeText(getApplicationContext(),msg,Toast.LENGTH_SHORT).show();
+    }
+
+    public void ResetToDefaults() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setMessage(R.string.rest_to_def);
+        builder.setTitle(R.string.warning);
+        builder.setCancelable(false);
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                Log.d("harsh_debug","resetting all settings...");
+                Settings.System.putInt(getContentResolver(), CRT_ANIM, 0);
+                new SU().execute("echo 0 > "+FBDELAY,"echo 0 > "+FBDELAY_MS);
+                new Utils().mountSystemRW();
+                new Utils().copyAssets("99_crtoff",INITD,777,getApplicationContext());
+                Settings.System.putInt(getContentResolver(), KILLER,0);
+                Settings.System.putInt(getContentResolver(), ASCEND_RING,1);
+                Settings.System.putInt(getContentResolver(), UNPLUG_WAKE,1);
+                Settings.System.putInt(getContentResolver(), ALL_ROTATE,0);
+                Settings.System.putInt(getContentResolver(), NAVIGATION,0);
+                Settings.System.putInt(getContentResolver(), IME,1);
+                Settings.System.putInt(getContentResolver(), SCROLL,1);
+                Settings.System.putInt(getContentResolver(), HEADSET,1);
+                Settings.System.putInt(getContentResolver(), AOSP_VIBRATION,1);
+                Settings.System.putInt(getContentResolver(), AOSP_ROTATION,0);
+                new SU().execute("rm "+LOGGER);
+                new Utils().mountSystemRW();
+                ClearSys();
+                new Utils().copyAssets("sysctl.conf_orig",SYSCTL1,644,getApplicationContext());
+                new SU().execute("cp -f /system/etc/sysctl.conf_orig /system/etc/sysctl.conf","rm /system/etc/sysctl.conf_orig","sysctl -p");
+                ClearSys();
+                finish();
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {}
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+    public void onDestroy () {
+        super.onDestroy();
+        Log.i("harsh_debug","Destrying");
+        startActivity(new Intent(this, MainActivity.class));
     }
 }
