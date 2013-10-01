@@ -451,6 +451,7 @@ public class MainActivity extends PreferenceActivity {
                 new SU().execute("cp -f /system/etc/sysctl.conf_orig /system/etc/sysctl.conf","rm /system/etc/sysctl.conf_orig","sysctl -p");
                 ClearSys();
                 finish();
+                startActivity(getIntent());
             }
         });
         builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -458,9 +459,5 @@ public class MainActivity extends PreferenceActivity {
         });
         AlertDialog dialog = builder.create();
         dialog.show();
-    }
-    public void onDestroy () {
-        super.onDestroy();
-        startActivity(new Intent(this, MainActivity.class));
     }
 }
