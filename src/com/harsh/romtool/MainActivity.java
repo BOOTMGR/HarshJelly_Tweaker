@@ -461,7 +461,6 @@ public class MainActivity extends PreferenceActivity {
     }
     public void onDestroy () {
         super.onDestroy();
-        Log.i("harsh_debug","Destrying");
         startActivity(new Intent(this, MainActivity.class));
     }
 }
