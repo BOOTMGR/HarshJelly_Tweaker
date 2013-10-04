@@ -430,19 +430,19 @@ public class MainActivity extends PreferenceActivity {
         builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 Log.d("harsh_debug","resetting all settings...");
-                Settings.System.putInt(getContentResolver(), CRT_ANIM, 0);
-                new SU().execute("echo 0 > "+FBDELAY,"echo 0 > "+FBDELAY_MS);
+                Settings.System.putInt(getContentResolver(), CRT_ANIM, 1);
+                new SU().execute("echo 1 > "+FBDELAY,"echo 350 > "+FBDELAY_MS);
                 new Utils().mountSystemRW();
-                new Utils().copyAssets("99_crtoff",INITD,777,getApplicationContext());
-                Settings.System.putInt(getContentResolver(), KILLER,0);
-                Settings.System.putInt(getContentResolver(), ASCEND_RING,1);
-                Settings.System.putInt(getContentResolver(), UNPLUG_WAKE,1);
+                new Utils().copyAssets("03_crt",INITD,777,getApplicationContext());
+                Settings.System.putInt(getContentResolver(), KILLER,1);
+                Settings.System.putInt(getContentResolver(), ASCEND_RING,0);
+                Settings.System.putInt(getContentResolver(), UNPLUG_WAKE,0);
                 Settings.System.putInt(getContentResolver(), ALL_ROTATE,0);
                 Settings.System.putInt(getContentResolver(), NAVIGATION,0);
-                Settings.System.putInt(getContentResolver(), IME,1);
+                Settings.System.putInt(getContentResolver(), IME,0);
                 Settings.System.putInt(getContentResolver(), SCROLL,1);
                 Settings.System.putInt(getContentResolver(), HEADSET,1);
-                Settings.System.putInt(getContentResolver(), AOSP_VIBRATION,1);
+                Settings.System.putInt(getContentResolver(), AOSP_VIBRATION,0);
                 Settings.System.putInt(getContentResolver(), AOSP_ROTATION,0);
                 new SU().execute("rm "+LOGGER);
                 new Utils().mountSystemRW();
