@@ -22,8 +22,8 @@ import java.io.OutputStream;
 
 class Utils {
 // SU_wop : Executes shell command as superuser and return the output as a String
-// Usage  : new Utils().SU_wop("command")
-    public String SU_wop(String cmds) {
+// Usage  : Utils.SU_wop("command")
+    public static String SU_wop(String cmds) {
 //     FLAG:0x2
         String out = null;
         try {
@@ -55,8 +55,8 @@ class Utils {
         return out;
     }
 // SU_retVal : Executes shell command as superuser and return the value of command executed.It'll return either 0 or 1
-// Usage  : new Utils().SU_retVal("command")
-    public int SU_retVal(String cmd) {
+// Usage  : Utils.SU_retVal("command")
+    public static int SU_retVal(String cmd) {
 //     FLAG:0x3
         Process process = null;
         try {
@@ -78,8 +78,8 @@ class Utils {
         return process.exitValue();
     }
 // SU_retVal : Executes shell command as superuser and return the value of command executed.It'll return either 0 or 1
-// Usage  : new Utils().SU_retVal("command")
-    public void copyAssets(String script,String path,int mode,Context context) {
+// Usage  : Utils.SU_retVal("command")
+    public static void copyAssets(String script,String path,int mode,Context context) {
         AssetManager assetManager = context.getAssets();
         InputStream in = null;
         OutputStream out = null;
@@ -105,7 +105,7 @@ class Utils {
         }
     }
 
-    public void copyFile(InputStream in, OutputStream out) throws IOException {
+    public static void copyFile(InputStream in, OutputStream out) throws IOException {
         byte[] buffer = new byte[1024];
         int read;
         while((read = in.read(buffer)) != -1){
@@ -113,8 +113,8 @@ class Utils {
         }
     }
 // mountSystemRW : Mount /system as R/W for Janice (only)
-// Usage  : new Utils().mountSystemRW()
-    public void mountSystemRW() {
+// Usage  : Utils.mountSystemRW()
+    public static void mountSystemRW() {
         new SU().execute("mount -o remount,rw /dev/block/mmcblk0p3 /system");
     }
 }

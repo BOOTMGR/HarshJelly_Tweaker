@@ -102,14 +102,14 @@ public class MainActivity extends PreferenceActivity {
                         Settings.System.putInt(getContentResolver(), CRT_ANIM, 1);
                         Log.d("harsh_debug","harsh_crt=>1");
                         new SU().execute("echo 1 > "+FBDELAY,"echo 350 > "+FBDELAY_MS);
-                        new Utils().mountSystemRW();
-                        new Utils().copyAssets("03_crt",INITD,777,getApplicationContext());
+                        Utils.mountSystemRW();
+                        Utils.copyAssets("03_crt",INITD,777,getApplicationContext());
                     } else {
                         Settings.System.putInt(getContentResolver(), CRT_ANIM, 0);
                         Log.d("harsh_debug","harsh_crt=>0");
                         new SU().execute("echo 0 > "+FBDELAY,"echo 0 > "+FBDELAY_MS);
-                        new Utils().mountSystemRW();
-                        new Utils().copyAssets("99_crtoff",INITD,777,getApplicationContext());
+                        Utils.mountSystemRW();
+                        Utils.copyAssets("99_crtoff",INITD,777,getApplicationContext());
                     }
                     return false;
                 }
@@ -213,22 +213,22 @@ public class MainActivity extends PreferenceActivity {
 
     public void SetSysctlListner() {
         final CheckBoxPreference sysctl_switch = (CheckBoxPreference) findPreference("sys_toggle");
-        int var1 = new Utils().SU_retVal("ls "+SYSCTL1+" | grep -q sysctl.conf");
-        int var2 = new Utils().SU_retVal("ls "+INITD+" | grep -q 04_sysctl");
+        int var1 = Utils.SU_retVal("ls "+SYSCTL1+" | grep -q sysctl.conf");
+        int var2 = Utils.SU_retVal("ls "+INITD+" | grep -q 04_sysctl");
         sysctl_switch.setChecked(var1 == 0 && var2 == 0);
         sysctl_switch.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
             public boolean onPreferenceClick(Preference preference) {
                 if (sysctl_switch.isChecked()) {
-                    new Utils().mountSystemRW();
+                    Utils.mountSystemRW();
                     showDialog("Warning","This tweaks are EXPERIMENTAL and their effects are unknown.They may or may not affect system performance.");
-                    new Utils().copyAssets("04_sysctl",INITD,777,getApplicationContext());
-                    new Utils().copyAssets("sysctl.conf",SYSCTL1,644,getApplicationContext());
+                    Utils.copyAssets("04_sysctl",INITD,777,getApplicationContext());
+                    Utils.copyAssets("sysctl.conf",SYSCTL1,644,getApplicationContext());
                     new SU().execute("sysctl -p");
                     Log.d("harsh_debug","sysctl tweaks enabled");
                 } else {
-                    new Utils().mountSystemRW();
+                    Utils.mountSystemRW();
                     ClearSys();
-                    new Utils().copyAssets("sysctl.conf_orig",SYSCTL1,644,getApplicationContext());
+                    Utils.copyAssets("sysctl.conf_orig",SYSCTL1,644,getApplicationContext());
                     new SU().execute("cp -f /system/etc/sysctl.conf_orig /system/etc/sysctl.conf","rm /system/etc/sysctl.conf_orig","sysctl -p");
                     ClearSys();
                     Log.d("harsh_debug","sysctl tweaks disabled");
@@ -322,15 +322,15 @@ public class MainActivity extends PreferenceActivity {
         final CheckBoxPreference cb = (CheckBoxPreference) findPreference("fsync_toggle");
         final File f = new File(FSYNC);
         if(f.exists()) {
-            String out = new Utils().SU_wop("head -1 /sys/kernel/fsync/mode");
+            String out = Utils.SU_wop("head -1 /sys/kernel/fsync/mode");
             int val = Integer.parseInt(Character.toString(out.charAt(0)));
             cb.setChecked(val != 0);
             cb.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
                 public boolean onPreferenceClick(Preference preference) {
                     if (cb.isChecked()) {
                         new SU().execute("echo 1 > "+FSYNC);
-                        new Utils().mountSystemRW();
-                        new Utils().copyAssets("02_fsync",INITD,777,getApplicationContext());
+                        Utils.mountSystemRW();
+                        Utils.copyAssets("02_fsync",INITD,777,getApplicationContext());
                         Log.d("harsh_debug", "fsync=>1");
                     } else {
                         new SU().execute("echo 0 > "+FSYNC,"rm /system/etc/init.d/02_fsync");
@@ -386,7 +386,7 @@ public class MainActivity extends PreferenceActivity {
     }
 
     public void ClearSys() {
-        new Utils().mountSystemRW();
+        Utils.mountSystemRW();
         new SU().execute("rm /system/etc/init.d/04_sysctl", "rm /system/etc/sysctl.conf");
     }
 
@@ -432,8 +432,8 @@ public class MainActivity extends PreferenceActivity {
                 Log.d("harsh_debug","resetting all settings...");
                 Settings.System.putInt(getContentResolver(), CRT_ANIM, 1);
                 new SU().execute("echo 1 > "+FBDELAY,"echo 350 > "+FBDELAY_MS);
-                new Utils().mountSystemRW();
-                new Utils().copyAssets("03_crt",INITD,777,getApplicationContext());
+                Utils.mountSystemRW();
+                Utils.copyAssets("03_crt",INITD,777,getApplicationContext());
                 Settings.System.putInt(getContentResolver(), KILLER,1);
                 Settings.System.putInt(getContentResolver(), ASCEND_RING,0);
                 Settings.System.putInt(getContentResolver(), UNPLUG_WAKE,0);
@@ -445,9 +445,9 @@ public class MainActivity extends PreferenceActivity {
                 Settings.System.putInt(getContentResolver(), AOSP_VIBRATION,0);
                 Settings.System.putInt(getContentResolver(), AOSP_ROTATION,0);
                 new SU().execute("rm "+LOGGER);
-                new Utils().mountSystemRW();
+                Utils.mountSystemRW();
                 ClearSys();
-                new Utils().copyAssets("sysctl.conf_orig",SYSCTL1,644,getApplicationContext());
+                Utils.copyAssets("sysctl.conf_orig",SYSCTL1,644,getApplicationContext());
                 new SU().execute("cp -f /system/etc/sysctl.conf_orig /system/etc/sysctl.conf","rm /system/etc/sysctl.conf_orig","sysctl -p");
                 ClearSys();
                 finish();
