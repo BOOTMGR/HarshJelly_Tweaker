@@ -52,7 +52,7 @@ class Utils {
             });
             Log.e("harsh_debug", "Error executing SU command, flag:0x2");
         }
-        return out;
+        return out.substring(0,out.length()-1);
     }
 // SU_retVal : Executes shell command as superuser and return the value of command executed.It'll return either 0 or 1
 // Usage  : Utils.SU_retVal("command")
