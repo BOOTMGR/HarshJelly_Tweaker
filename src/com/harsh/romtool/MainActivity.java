@@ -85,6 +85,9 @@ public class MainActivity extends PreferenceActivity {
             case R.id.reset:
                 ResetToDefaults();
                 return true;
+            case R.id.info:
+                startActivity(new Intent(this, Info.class));
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

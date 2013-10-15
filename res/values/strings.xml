@@ -7,7 +7,7 @@
     <string name="aosp_vib">Vibration</string>
     <string name="aosp_oriet">Rotation</string>
     <string name="ascend_ring">Ascending Ringtone</string>
-    <string name="info">About</string>
+    <string name="about">About</string>
     <string name="rom">HarshJelly ROM</string>
     <string name="info_1">Tweaker</string>
     <string name="info_2">3.0</string>
@@ -39,4 +39,5 @@
     <string name="help">Help</string>
     <string name="reset">Reset to Defaults</string>
     <string name="rest_to_def">Are sure want to switch to default Settings?</string>
+    <string name="info">Information</string>
 </resources>

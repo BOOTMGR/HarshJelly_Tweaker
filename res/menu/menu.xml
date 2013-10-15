@@ -1,7 +1,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/about" android:title="@string/info" android:showAsAction="ifRoom"></item>
+    <item android:id="@+id/about" android:title="@string/about" android:showAsAction="ifRoom"></item>
     <item android:id="@+id/help" android:title="@string/help"></item>
     <item android:id="@+id/hotboot" android:title="@string/hotboot"></item>
+    <item android:id="@+id/info" android:title="@string/info"></item>
     <item android:id="@+id/reset" android:title="@string/reset"></item>
 </menu>
 

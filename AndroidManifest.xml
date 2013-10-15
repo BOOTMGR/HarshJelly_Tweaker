@@ -31,6 +31,11 @@
             android:label="@string/info"
             android:screenOrientation="portrait" >
         </activity>
+        <activity
+            android:name="com.harsh.romtool.Info"
+            android:label="@string/info"
+            android:screenOrientation="portrait" >
+        </activity>
         <activity android:name=".Help" />
     </application>
     
