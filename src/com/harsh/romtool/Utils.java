@@ -77,8 +77,8 @@ class Utils {
         }
         return process.exitValue();
     }
-// SU_retVal : Executes shell command as superuser and return the value of command executed.It'll return either 0 or 1
-// Usage  : Utils.SU_retVal("command")
+// copyAssets : copies file in assets directory of apk to destination
+// Usage  : Utils.copyAssets(file1,/system/etc,777,this)
     public static void copyAssets(String script,String path,int mode,Context context) {
         AssetManager assetManager = context.getAssets();
         InputStream in = null;

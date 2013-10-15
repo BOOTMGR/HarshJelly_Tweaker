@@ -195,20 +195,27 @@ public class MainActivity extends PreferenceActivity {
 
     public void SetLoggerListner() {
         final CheckBoxPreference logger = (CheckBoxPreference) findPreference("log_toggle");
+        int cocore = Utils.SU_retVal("echo $(uname -r) | grep -i -q cocore");
         final File log_enable = new File(LOGGER);
         logger.setChecked(log_enable.exists());
-        logger.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
-            public boolean onPreferenceClick(Preference preference) {
-                if (logger.isChecked()) {
-                    new SU().execute("touch "+LOGGER,"chmod 777 "+LOGGER);
-                    Log.d("harsh_debug","logger enabled");
-                } else {
-                    new SU().execute("rm "+LOGGER);
-                    Log.d("harsh_debug","logger disabled");
+        if (cocore == 0)
+            logger.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
+                public boolean onPreferenceClick(Preference preference) {
+                    if (logger.isChecked()) {
+                        new SU().execute("touch "+LOGGER,"chmod 777 "+LOGGER);
+                        Log.d("harsh_debug","logger enabled");
+                    } else {
+                        new SU().execute("rm "+LOGGER);
+                        Log.d("harsh_debug","logger disabled");
+                    }
+                    return false;
                 }
-                return false;
-            }
-        });
+            });
+        else {
+            logger.setEnabled(false);
+            logger.setSummary("Unsupported kernel");
+            Log.e("harsh_debug","Logger:not supported");
+        }
     }
 
     public void SetSysctlListner() {
