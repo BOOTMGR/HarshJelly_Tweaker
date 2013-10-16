@@ -40,4 +40,6 @@
     <string name="reset">Reset to Defaults</string>
     <string name="rest_to_def">Are sure want to switch to default Settings?</string>
     <string name="info">Information</string>
+    <string name="wifi_notif">WiFi Connection Toast</string>
+    <string name="wifi_notif_sum">Shows toast when connected to WiFi AP</string>
 </resources>
