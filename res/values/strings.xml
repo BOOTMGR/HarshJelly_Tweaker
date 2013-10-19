@@ -42,4 +42,7 @@
     <string name="info">Information</string>
     <string name="wifi_notif">WiFi Connection Toast</string>
     <string name="wifi_notif_sum">Shows toast when connected to WiFi AP</string>
+    <string name="tw_title">TWLauncher Tweaks</string>
+    <string name="tw_pg_rot">Wallpaper Scrolling</string>
+    <string name="tw_pg_rot_sum">Enables scrolling of wallpaper (need to restart launcher)</string>
 </resources>

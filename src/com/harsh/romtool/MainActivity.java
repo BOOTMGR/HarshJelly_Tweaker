@@ -36,6 +36,7 @@ public class MainActivity extends PreferenceActivity {
     private static final String HEADSET = "harsh_volume";
     private static final String SCROLL = "harsh_scroll";
     private static final String WIFI_NOTIF = "harsh_wifi_notif";
+    private static final String TW_SCROLL = "harsh_tw_scroll";
     private static final String FBDELAY = "/sys/module/fbearlysuspend/parameters/fbdelay";
     private static final String FBDELAY_MS = "/sys/module/fbearlysuspend/parameters/fbdelay_ms";
     private static final String LOGGER = "/data/logger";
@@ -65,6 +66,7 @@ public class MainActivity extends PreferenceActivity {
         SetScrollListener();
         SetHeadsetWarningListener();
         SetWifiNotifListener();
+        SetTWScrollListener();
     }
 
     @Override
@@ -409,6 +411,24 @@ public class MainActivity extends PreferenceActivity {
                 } else {
                     Settings.System.putInt(getContentResolver(), WIFI_NOTIF,0);
                     Log.d("harsh_debug","harsh_wifi_notif=>0");
+                }
+                return false;
+            }
+        });
+    }
+
+    public void SetTWScrollListener() {
+        final CheckBoxPreference cb = (CheckBoxPreference) findPreference("tw_pg_toggle");
+        int val = Settings.System.getInt(getContentResolver(),TW_SCROLL, 0);
+        cb.setChecked(val != 0);
+        cb.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
+            public boolean onPreferenceClick(Preference preference) {
+                if (cb.isChecked()) {
+                    Settings.System.putInt(getContentResolver(), TW_SCROLL,1);
+                    Log.d("harsh_debug","harsh_tw_scroll=>1");
+                } else {
+                    Settings.System.putInt(getContentResolver(), TW_SCROLL,0);
+                    Log.d("harsh_debug","harsh_tw_scroll=>0");
                 }
                 return false;
             }

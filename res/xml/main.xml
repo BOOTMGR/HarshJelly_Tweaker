@@ -22,4 +22,7 @@
         <CheckBoxPreference android:title="@string/sysctl" android:key="sys_toggle" android:summary="EXPERIMENTAL Sysctl Tweaks"/>
         <CheckBoxPreference android:title="@string/fsync" android:key="fsync_toggle" android:summary="@string/fsync_sum"/>
     </PreferenceCategory>
+    <PreferenceCategory android:title="@string/tw_title" >
+        <CheckBoxPreference android:title="@string/tw_pg_rot" android:key="tw_pg_toggle" android:summary="@string/tw_pg_rot_sum"/>
+    </PreferenceCategory>
 </PreferenceScreen>
