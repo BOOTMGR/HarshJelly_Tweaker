@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="@string/basic" >
+    <PreferenceScreen android:title="@string/basic">
         <CheckBoxPreference android:title="@string/crt_animation" android:key="crt_toggle" android:summary= "Old TV Effect while screen off"/>
         <CheckBoxPreference android:title="@string/killer" android:key="killer_toggle" android:summary="Kills foreground app on Long pressing back key"/>
         <CheckBoxPreference android:title="@string/ascend_ring" android:key="ascending_toggle" android:summary="Increasing Ringtone Volume"/>
@@ -12,17 +12,18 @@
         <CheckBoxPreference android:title="@string/scroll" android:key="scroll_toggle" android:summary="@string/scroll_sum"/>
         <CheckBoxPreference android:title="@string/headset" android:key="hs_toggle" android:summary="@string/headset_sum"/>
         <CheckBoxPreference android:title="@string/wifi_notif" android:key="wifi_notif_toggle" android:summary="@string/wifi_notif_sum"/>
-    </PreferenceCategory>
-    <PreferenceCategory android:title="@string/lock" >
+    </PreferenceScreen>
+    <PreferenceScreen android:title="@string/lock">
         <CheckBoxPreference android:title="@string/aosp_vib" android:key="vib_toggle" android:summary="Haptic feedback in AOSP Lockscreen"/>
         <CheckBoxPreference android:title="@string/aosp_oriet" android:key="rot_toggle" android:summary="Allows rotation in Lockscreen"/>
-    </PreferenceCategory>
-    <PreferenceCategory android:title="@string/misc" >
+    </PreferenceScreen>
+    <PreferenceScreen android:title="@string/tw_title">
+        <CheckBoxPreference android:title="@string/tw_pg_rot" android:key="tw_pg_toggle" android:summary="@string/tw_pg_rot_sum"/>
+    </PreferenceScreen>
+    <PreferenceScreen android:title="@string/misc">
         <CheckBoxPreference android:title="@string/log" android:key="log_toggle" android:summary="Enables android logger"/>
         <CheckBoxPreference android:title="@string/sysctl" android:key="sys_toggle" android:summary="EXPERIMENTAL Sysctl Tweaks"/>
         <CheckBoxPreference android:title="@string/fsync" android:key="fsync_toggle" android:summary="@string/fsync_sum"/>
-    </PreferenceCategory>
-    <PreferenceCategory android:title="@string/tw_title" >
-        <CheckBoxPreference android:title="@string/tw_pg_rot" android:key="tw_pg_toggle" android:summary="@string/tw_pg_rot_sum"/>
-    </PreferenceCategory>
+        <ListPreference android:key="font" android:entries="@array/font_name" android:summary="@string/font_sum" android:entryValues="@array/font_val" android:title="@string/font" />
+    </PreferenceScreen>
 </PreferenceScreen>

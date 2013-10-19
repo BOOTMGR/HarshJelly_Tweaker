@@ -18,7 +18,7 @@
     <string name="sysctl">Sysctl Tweaks</string>
     <string name="basic">ROM Tweaks</string>
     <string name="lock">LockScreen Tweaks</string>
-    <string name="misc">Miscellaneous Tweaks</string>
+    <string name="misc">Misc. Tweaks</string>
     <string name="unplug">Wake on Unplug</string>
     <string name="warning">Warning...</string>
     <string name="hotboot_msg">Do you want to Hotboot now?</string>
@@ -45,4 +45,6 @@
     <string name="tw_title">TWLauncher Tweaks</string>
     <string name="tw_pg_rot">Wallpaper Scrolling</string>
     <string name="tw_pg_rot_sum">Enables scrolling of wallpaper (need to restart launcher)</string>
+    <string name="font">Font</string>
+    <string name="font_sum">Sets default font</string>
 </resources>
