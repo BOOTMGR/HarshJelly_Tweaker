@@ -10,8 +10,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
+import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceScreen;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
@@ -67,6 +69,7 @@ public class MainActivity extends PreferenceActivity {
         SetHeadsetWarningListener();
         SetWifiNotifListener();
         SetTWScrollListener();
+        SetFontListener();
     }
 
     @Override
@@ -433,6 +436,29 @@ public class MainActivity extends PreferenceActivity {
                 return false;
             }
         });
+    }
+
+    public void SetFontListener() {
+        PreferenceScreen prefs = getPreferenceScreen();
+        ListPreference mFontrpef = (ListPreference) prefs.findPreference("font");
+        mFontrpef.setOnPreferenceChangeListener(
+                new Preference.OnPreferenceChangeListener() {
+                    @Override
+                    public boolean onPreferenceChange(Preference preference,Object newValue) {
+                        if (Integer.valueOf((String) newValue) == 0) {
+                            Utils.copyAssets("Roboto-Regular.ttf","/system/fonts",644,getApplicationContext());
+                            showhotbootDialog();
+                            Log.i("harsh_debug","Changed font to Roboto");
+                        } else {
+                            Utils.copyAssets("Ubuntu.ttf","/system/fonts",644,getApplicationContext());
+                            new SU().execute("mv /system/fonts/Ubuntu.ttf /system/fonts/Roboto-Regular.ttf");
+                            showhotbootDialog();
+                            Log.i("harsh_debug","Changed font to Ubuntu");
+                        }
+                        return true;
+                    }
+                });
+
     }
 
     public void ClearSys() {
