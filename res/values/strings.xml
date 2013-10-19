@@ -47,4 +47,6 @@
     <string name="tw_pg_rot_sum">Enables scrolling of wallpaper (need to restart launcher)</string>
     <string name="font">Font</string>
     <string name="font_sum">Sets default font</string>
+    <string name="statusbar_scroll">Quickpanel auto Scrolling</string>
+    <string name="statusbar_scroll_sum">Automatically scrolls quickpanel toggle upon expanding statusbar</string>
 </resources>

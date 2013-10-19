@@ -12,6 +12,7 @@
         <CheckBoxPreference android:title="@string/scroll" android:key="scroll_toggle" android:summary="@string/scroll_sum"/>
         <CheckBoxPreference android:title="@string/headset" android:key="hs_toggle" android:summary="@string/headset_sum"/>
         <CheckBoxPreference android:title="@string/wifi_notif" android:key="wifi_notif_toggle" android:summary="@string/wifi_notif_sum"/>
+        <CheckBoxPreference android:title="@string/statusbar_scroll" android:key="quickpanel_scroll" android:summary="@string/statusbar_scroll_sum"/>
     </PreferenceScreen>
     <PreferenceScreen android:title="@string/lock">
         <CheckBoxPreference android:title="@string/aosp_vib" android:key="vib_toggle" android:summary="Haptic feedback in AOSP Lockscreen"/>

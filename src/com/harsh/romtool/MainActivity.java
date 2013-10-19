@@ -39,6 +39,7 @@ public class MainActivity extends PreferenceActivity {
     private static final String SCROLL = "harsh_scroll";
     private static final String WIFI_NOTIF = "harsh_wifi_notif";
     private static final String TW_SCROLL = "harsh_tw_scroll";
+    private static final String QUICK_SCROLL = "harsh_quick_scroll";
     private static final String FBDELAY = "/sys/module/fbearlysuspend/parameters/fbdelay";
     private static final String FBDELAY_MS = "/sys/module/fbearlysuspend/parameters/fbdelay_ms";
     private static final String LOGGER = "/data/logger";
@@ -70,6 +71,7 @@ public class MainActivity extends PreferenceActivity {
         SetWifiNotifListener();
         SetTWScrollListener();
         SetFontListener();
+        SetQuickPanelScrollListener();
     }
 
     @Override
@@ -458,7 +460,25 @@ public class MainActivity extends PreferenceActivity {
                         return true;
                     }
                 });
+    }
 
+    public void SetQuickPanelScrollListener() {
+        final CheckBoxPreference cb = (CheckBoxPreference) findPreference("quickpanel_scroll");
+        int val = Settings.System.getInt(getContentResolver(),QUICK_SCROLL, 0);
+        cb.setChecked(val != 0);
+        cb.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
+            public boolean onPreferenceClick(Preference preference) {
+                if (cb.isChecked()) {
+                    Settings.System.putInt(getContentResolver(), QUICK_SCROLL,1);
+                    Log.d("harsh_debug","harsh_quick_scroll=>1");
+                } else {
+                    Settings.System.putInt(getContentResolver(), QUICK_SCROLL,0);
+                    ShowToast("Reboot is Required");
+                    Log.d("harsh_debug","harsh_quick_scroll=>0");
+                }
+                return false;
+            }
+        });
     }
 
     public void ClearSys() {
