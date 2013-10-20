@@ -541,6 +541,8 @@ public class MainActivity extends PreferenceActivity {
                 Settings.System.putInt(getContentResolver(), AOSP_VIBRATION,0);
                 Settings.System.putInt(getContentResolver(), AOSP_ROTATION,0);
                 Settings.System.putInt(getContentResolver(), WIFI_NOTIF,0);
+                Settings.System.putInt(getContentResolver(), TW_SCROLL,0);
+                Settings.System.putInt(getContentResolver(), QUICK_SCROLL,1);
                 new SU().execute("rm "+LOGGER);
                 Utils.mountSystemRW();
                 ClearSys();
