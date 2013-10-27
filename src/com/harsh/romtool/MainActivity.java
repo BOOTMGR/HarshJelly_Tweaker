@@ -105,10 +105,9 @@ public class MainActivity extends PreferenceActivity {
     public void SetCRTListner() {
         final CheckBoxPreference crt_toggle = (CheckBoxPreference) findPreference("crt_toggle");
         final File f = new File(FBDELAY);
-        if(f.exists()) {
-            int crt = Settings.System.getInt(getContentResolver(),CRT_ANIM, 0);
-            crt_toggle.setChecked(crt != 0);
-            crt_toggle.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
+        int crt = Settings.System.getInt(getContentResolver(),CRT_ANIM, 0);
+        crt_toggle.setChecked(crt != 0);
+        crt_toggle.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
                 public boolean onPreferenceClick(Preference preference) {
                     if (crt_toggle.isChecked()) {
                         Settings.System.putInt(getContentResolver(), CRT_ANIM, 1);
@@ -125,12 +124,9 @@ public class MainActivity extends PreferenceActivity {
                     }
                     return false;
                 }
-            });
-        } else {
-            crt_toggle.setEnabled(false);
+        });
+        if(!f.exists())
             crt_toggle.setSummary("Unsupported kernel");
-            Log.e("harsh_debug","CRT Animation:Unsupported Kernel");
-        }
     }
 
     public void SetKillerListner() {
