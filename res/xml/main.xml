@@ -27,4 +27,7 @@
         <CheckBoxPreference android:title="@string/fsync" android:key="fsync_toggle" android:summary="@string/fsync_sum"/>
         <ListPreference android:key="font" android:entries="@array/font_name" android:summary="@string/font_sum" android:entryValues="@array/font_val" android:title="@string/font" />
     </PreferenceScreen>
+    <PreferenceScreen android:title="@string/xposed" android:summary="@string/xposed_sum">
+        <ListPreference android:title="@string/longpress_delay" android:summary="@string/longpress_delay_sum" android:key="longpress_delay" android:entries="@array/longpress_delay_name" android:entryValues="@array/longpress_delay_val" />
+    </PreferenceScreen>
 </PreferenceScreen>

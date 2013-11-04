@@ -37,6 +37,9 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity android:name=".Help" />
+        <meta-data android:value="true" android:name="xposedmodule"/>
+        <meta-data android:value="2.1*" android:name="xposedminversion"/>
+        <meta-data android:value="Xposed Module for HarshJelly ROM" android:name="xposeddescription"/>
     </application>
     
 

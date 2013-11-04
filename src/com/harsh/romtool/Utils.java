@@ -117,32 +117,35 @@ class Utils {
     public static void mountSystemRW() {
         new SU().execute("mount -o remount,rw /dev/block/mmcblk0p3 /system");
     }
+    
+    public static void mSetFilePerm(String path,int mode) {
+		new SU().execute("chmod "+mode+" "+path);
+	}
 }
 // SU : This Asynctask class Executes shell commands as Superuser in background
 // Usage  : new SU().execute("command1","command2", ... )
-class SU extends AsyncTask<String, Void, Void> {
-   @Override
-   protected Void doInBackground(String... cmds) {
+	class SU extends AsyncTask<String, Void, Void> {
+	   @Override
+	   protected Void doInBackground(String... cmds) {
 //     FLAG:0x1
-       try {
-           Process process = Runtime.getRuntime().exec("su");
-           DataOutputStream os = new DataOutputStream(process.getOutputStream());
-           for(int i=0;i<cmds.length;i++)
-               os.writeBytes(cmds[i]+"\n");
-           os.writeBytes("exit\n");
-           os.flush();
-           process.waitFor();
-       } catch (Exception e) {
-           final Activity activity= new MainActivity();
-           activity.runOnUiThread(new Runnable() {
-               public void run() {
-                   Toast.makeText(activity, "Error Occured...!", Toast.LENGTH_SHORT).show();
-               }
-           });
-           Log.e("harsh_debug","Error executing SU command, flag:0x1");
-       }
-       return null;
-   }
+	       try {
+	           Process process = Runtime.getRuntime().exec("su");
+	           DataOutputStream os = new DataOutputStream(process.getOutputStream());
+	           for(int i=0;i<cmds.length;i++)
+	               os.writeBytes(cmds[i]+"\n");
+	           os.writeBytes("exit\n");
+	           os.flush();
+	           process.waitFor();
+	       } catch (Exception e) {
+	           final Activity activity= new MainActivity();
+	           activity.runOnUiThread(new Runnable() {
+	               public void run() {
+	                   Toast.makeText(activity, "Error Occured...!", Toast.LENGTH_SHORT).show();
+	               }
+	           });
+	           Log.e("harsh_debug","Error executing SU command, flag:0x1");
+	       }
+	       return null;
+	   }
 }
-
 

@@ -5,9 +5,12 @@
 package com.harsh.romtool;
 
 
+import java.io.File;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
@@ -20,12 +23,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import java.io.File;
-
 
 public class MainActivity extends PreferenceActivity {
 
-
+	private static final String MY_PACKAGE = "com.harsh.romtool";
     private static final String CRT_ANIM = "harsh_crt";
     private static final String KILLER = "harsh_killer";
     private static final String AOSP_VIBRATION = "harsh_aosp_vib";
@@ -48,10 +49,12 @@ public class MainActivity extends PreferenceActivity {
     private static final String FSYNC = "/sys/kernel/fsync/mode";
 
 
-    @Override
+    @SuppressWarnings("deprecation")
+	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.main);
+        getPreferenceManager().setSharedPreferencesMode(MODE_WORLD_READABLE);
         Log.i("harsh_debug", "===========HarshJelly Tweaker Launched===========");
         SetCRTListner();
         SetKillerListner();

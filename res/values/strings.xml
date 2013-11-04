@@ -20,7 +20,7 @@
     <string name="lock">LockScreen Tweaks</string>
     <string name="misc">Misc. Tweaks</string>
     <string name="unplug">Wake on Unplug</string>
-    <string name="warning">Warning...</string>
+    <string name="warning">Warning</string>
     <string name="hotboot_msg">Do you want to Hotboot now?</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
@@ -49,4 +49,8 @@
     <string name="font_sum">Sets default font</string>
     <string name="statusbar_scroll">Quickpanel auto Scrolling</string>
     <string name="statusbar_scroll_sum">Automatically scrolls quickpanel toggle upon expanding statusbar</string>
+    <string name="xposed">Xposed Tweakes</string>
+    <string name="xposed_sum">Tweaks powered by Xposed Framework.Module must be enabled from Xposed Installer inorder to make them work</string>
+    <string name="longpress_delay">Long press Delay</string>
+    <string name="longpress_delay_sum">Amount of time to delay actions on holding Hardware Keys (Long press back to kill,Recent apps etc)</string>
 </resources>
