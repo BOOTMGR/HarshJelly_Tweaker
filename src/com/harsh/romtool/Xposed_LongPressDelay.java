@@ -22,7 +22,7 @@ public class Xposed_LongPressDelay implements IXposedHookLoadPackage {
 	                protected Object replaceHookedMethod(
 	                        XC_MethodHook.MethodHookParam paramAnonymousMethodHookParam)
 	                        throws Throwable {
-	                	int val = Integer.parseInt(pref.getString("longpress_delay", Integer.toString(500)));
+	                	int val = Integer.parseInt(pref.getString("longpress_delay", "500"));
 	                    return val;
 	                }
 	            };
