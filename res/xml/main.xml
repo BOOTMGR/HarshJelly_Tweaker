@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceScreen android:title="@string/basic">
         <CheckBoxPreference android:title="@string/crt_animation" android:key="crt_toggle" android:summary= "Old TV Effect while screen off"/>
