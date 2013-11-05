@@ -28,5 +28,6 @@
     </PreferenceScreen>
     <PreferenceScreen android:title="@string/xposed" android:summary="@string/xposed_sum">
         <ListPreference android:title="@string/longpress_delay" android:summary="@string/longpress_delay_sum" android:key="longpress_delay" android:entries="@array/longpress_delay_name" android:entryValues="@array/longpress_delay_val" />
+        <CheckBoxPreference android:title="@string/clear_defaults" android:key="clear_defaults" android:summary="@string/clear_defaults_sum"/>
     </PreferenceScreen>
 </PreferenceScreen>

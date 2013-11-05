@@ -53,4 +53,6 @@
     <string name="xposed_sum">Tweaks powered by Xposed Framework.Module must be enabled from Xposed Installer inorder to make them work</string>
     <string name="longpress_delay">Long press Delay</string>
     <string name="longpress_delay_sum">Amount of time to delay actions on holding Hardware Keys (Long press back to kill,Recent apps etc)</string>
+    <string name="clear_defaults">Show Defaults Dialog</string>
+    <string name="clear_defaults_sum">Shows dialog when default actions is chosen from various choices</string>
 </resources>
