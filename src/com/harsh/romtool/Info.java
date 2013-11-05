@@ -19,7 +19,7 @@ public class Info extends Activity {
         TextView kernel = (TextView) findViewById(R.id.kernel);
 		hjt.setText("HarshJelly Tweaker Version : "+getString(R.string.info_2));
 		hj.setText("HarshJelly Version : "+ Utils.SU_wop("getprop ro.harshjelly.version"));
-        kernel.setText("Kernel : "+Utils.SU_wop("uname -r | cut -b 8-25"));
+        kernel.setText("Kernel : "+Utils.SU_wop("uname -r | cut -b 8-50"));
     }
 
 }
