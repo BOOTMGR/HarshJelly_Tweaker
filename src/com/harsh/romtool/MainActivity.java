@@ -91,6 +91,7 @@ public class MainActivity extends Activity {
                     onSharedPreferenceChanged(sharedPref,"tw_pg_toggle");
                     onSharedPreferenceChanged(sharedPref,"font");
                     onSharedPreferenceChanged(sharedPref,"quickpanel_scroll");
+                    UserTileFixer();
         }
 
 		@Override
@@ -523,6 +524,17 @@ public class MainActivity extends Activity {
 	        });
 	        AlertDialog dialog = builder.create();
 	        dialog.show();
+	    }
+	    
+	    public void UserTileFixer() {
+	    	Preference button = (Preference)findPreference("systemui_killer");
+	        button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+		        @Override
+		        public boolean onPreferenceClick(Preference arg0) {
+		        	new SU().execute("pkill com.android.systemui");
+		        	return true;
+		        }
+	        });
 	    }
 	}
     
