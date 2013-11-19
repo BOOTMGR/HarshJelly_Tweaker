@@ -117,7 +117,8 @@ class Utils {
     public static void mountSystemRW() {
         new SU().execute("mount -o remount,rw /dev/block/mmcblk0p3 /system");
     }
-    
+// mSetFilePerm : Sets file permission for Linux FS
+// Usage  : Utils.mSetFilePerm("/system/build.prop",644)    
     public static void mSetFilePerm(String path,int mode) {
 		new SU().execute("chmod "+mode+" "+path);
 	}

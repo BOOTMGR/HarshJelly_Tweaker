@@ -99,8 +99,6 @@ public final class R {
         public static final int statusbar_scroll=0x7f07002e;
         public static final int statusbar_scroll_sum=0x7f07002f;
         public static final int sysctl=0x7f07000e;
-        public static final int systemui_kill=0x7f070036;
-        public static final int systemui_kill_sum=0x7f070037;
         public static final int tw_pg_rot=0x7f07002a;
         public static final int tw_pg_rot_sum=0x7f07002b;
         public static final int tw_title=0x7f070029;
