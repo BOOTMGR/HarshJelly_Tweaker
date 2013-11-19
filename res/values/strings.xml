@@ -55,6 +55,4 @@
     <string name="longpress_delay_sum">Amount of time to delay actions on holding Hardware Keys (Long press back to kill,Recent apps etc)</string>
     <string name="clear_defaults">Show Defaults Dialog</string>
     <string name="clear_defaults_sum">Shows dialog when default actions is chosen from various choices</string>
-    <string name="systemui_kill">Fix User Tile for 4.2 Statusbar</string>
-    <string name="systemui_kill_sum">Click here if user tile is not showing custom picture.May be your statusbar will be disappeared.If it doesn\'t return back after some time then reboot device</string>
 </resources>
