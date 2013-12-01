@@ -55,4 +55,6 @@
     <string name="longpress_delay_sum">Amount of time to delay actions on holding Hardware Keys (Long press back to kill,Recent apps etc)</string>
     <string name="clear_defaults">Show Defaults Dialog</string>
     <string name="clear_defaults_sum">Shows dialog when default actions is chosen from various choices</string>
+    <string name="usertile">UserTile Image</string>
+    <string name="usertile_sum">UserTile icon displayed on 4.2 statusbar</string>
 </resources>

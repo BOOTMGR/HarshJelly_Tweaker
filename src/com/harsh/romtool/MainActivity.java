@@ -19,9 +19,11 @@ import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
+import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 import android.provider.Settings;
+import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -89,6 +91,7 @@ public class MainActivity extends Activity {
                     onSharedPreferenceChanged(sharedPref,"tw_pg_toggle");
                     onSharedPreferenceChanged(sharedPref,"font");
                     onSharedPreferenceChanged(sharedPref,"quickpanel_scroll");
+                    handleUserTile();
         }
 
 		@Override
@@ -467,6 +470,17 @@ public class MainActivity extends Activity {
 	                return false;
 	            }
 	        });
+	    }
+	    
+	    public void handleUserTile() {
+	    	final PreferenceScreen ps = (PreferenceScreen) findPreference("usertile");
+	    	ps.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+				@Override
+				public boolean onPreferenceClick(Preference arg0) {
+					showDialog("Usage", "Put two images namely my_prof_normal.png and my_prof_pressed.png into /data/HarshJelly folder (create if not created) and set permission to 777 for both images.");
+					return false;
+				}
+			});
 	    }
 	    
 	    public void showDialog(String title, String msg) {

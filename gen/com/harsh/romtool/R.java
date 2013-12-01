@@ -103,6 +103,8 @@ public final class R {
         public static final int tw_pg_rot_sum=0x7f07002b;
         public static final int tw_title=0x7f070029;
         public static final int unplug=0x7f070012;
+        public static final int usertile=0x7f070036;
+        public static final int usertile_sum=0x7f070037;
         public static final int warning=0x7f070013;
         public static final int wifi_notif=0x7f070027;
         public static final int wifi_notif_sum=0x7f070028;
