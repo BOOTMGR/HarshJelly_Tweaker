@@ -8,7 +8,6 @@
         <CheckBoxPreference android:title="@string/all_rot" android:key="allrot_toggle" android:summary="Allows 360 Degree Rotation"/>
         <CheckBoxPreference android:title="@string/navigation" android:key="nav_toggle" android:summary="@string/navigation_sum"/>
         <CheckBoxPreference android:title="@string/ime" android:key="ime_toggle" android:summary="@string/ime_sum"/>
-        <CheckBoxPreference android:title="@string/scroll" android:key="scroll_toggle" android:summary="@string/scroll_sum"/>
         <CheckBoxPreference android:title="@string/headset" android:key="hs_toggle" android:summary="@string/headset_sum"/>
         <CheckBoxPreference android:title="@string/wifi_notif" android:key="wifi_notif_toggle" android:summary="@string/wifi_notif_sum"/>
         <CheckBoxPreference android:title="@string/statusbar_scroll" android:key="quickpanel_scroll" android:summary="@string/statusbar_scroll_sum"/>

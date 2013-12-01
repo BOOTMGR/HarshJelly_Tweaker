@@ -40,7 +40,6 @@ public class MainActivity extends Activity {
     private static final String NAVIGATION = "harsh_navigation";
     private static final String IME = "harsh_ime";
     private static final String HEADSET = "harsh_volume";
-    private static final String SCROLL = "harsh_scroll";
     private static final String WIFI_NOTIF = "harsh_wifi_notif";
     private static final String TW_SCROLL = "harsh_tw_scroll";
     private static final String QUICK_SCROLL = "harsh_quick_scroll";
@@ -85,7 +84,6 @@ public class MainActivity extends Activity {
                     onSharedPreferenceChanged(sharedPref,"nav_toggle");
                     onSharedPreferenceChanged(sharedPref,"ime_toggle");
                     onSharedPreferenceChanged(sharedPref,"fsync_toggle");
-                    onSharedPreferenceChanged(sharedPref,"scroll_toggle");
                     onSharedPreferenceChanged(sharedPref,"hs_toggle");
                     onSharedPreferenceChanged(sharedPref,"wifi_notif_toggle");
                     onSharedPreferenceChanged(sharedPref,"tw_pg_toggle");
@@ -108,7 +106,6 @@ public class MainActivity extends Activity {
 			if(key.equals("nav_toggle")) handleNavigation();
 			if(key.equals("ime_toggle")) handleIME();
 			if(key.equals("fsync_toggle")) handleFSYNC();
-			if(key.equals("scroll_toggle")) handleScroll();
 			if(key.equals("hs_toggle")) handleHeadsetWarning();
 			if(key.equals("wifi_notif_toggle")) handleWiFiNotification();
 			if(key.equals("tw_pg_toggle")) handleTWScroll();
@@ -376,26 +373,6 @@ public class MainActivity extends Activity {
 	        }
 	    }
 		
-		public void handleScroll() {
-	        final CheckBoxPreference cb = (CheckBoxPreference) findPreference("scroll_toggle");
-	        int val = Settings.System.getInt(getActivity().getContentResolver(),SCROLL, 0);
-	        cb.setChecked(val != 0);
-	        cb.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
-	            public boolean onPreferenceClick(Preference preference) {
-	                if (cb.isChecked()) {
-	                    Settings.System.putInt(getActivity().getContentResolver(), SCROLL,1);
-	                    Log.d("harsh_debug","harsh_scroll=>1");
-	                    ShowToast("Reboot is Required");
-	                } else {
-	                    Settings.System.putInt(getActivity().getContentResolver(), SCROLL,0);
-	                    Log.d("harsh_debug","harsh_scroll=>0");
-	                    ShowToast("Reboot is Required");
-	                }
-	                return false;
-	            }
-	        });
-	    }
-		
 		public void handleHeadsetWarning() {
 	        final CheckBoxPreference cb = (CheckBoxPreference) findPreference("hs_toggle");
 	        int val = Settings.System.getInt(getActivity().getContentResolver(),HEADSET, 0);
@@ -596,7 +573,6 @@ public class MainActivity extends Activity {
                 Settings.System.putInt(getContentResolver(), ALL_ROTATE,0);
                 Settings.System.putInt(getContentResolver(), NAVIGATION,0);
                 Settings.System.putInt(getContentResolver(), IME,0);
-                Settings.System.putInt(getContentResolver(), SCROLL,1);
                 Settings.System.putInt(getContentResolver(), HEADSET,1);
                 Settings.System.putInt(getContentResolver(), AOSP_VIBRATION,0);
                 Settings.System.putInt(getContentResolver(), AOSP_ROTATION,0);
