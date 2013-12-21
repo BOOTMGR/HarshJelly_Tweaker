@@ -57,4 +57,6 @@
     <string name="clear_defaults_sum">Shows dialog when default actions is chosen from various choices</string>
     <string name="usertile">UserTile Image</string>
     <string name="usertile_sum">UserTile icon displayed on 4.2 statusbar</string>
+    <string name="statusbar_transparancy">Statusbar Transparancy</string>
+    <string name="statusbar_transparancy_sum">Choose transparancy level for statusbar</string>
 </resources>

@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
+import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
@@ -44,6 +45,7 @@ public class MainActivity extends Activity {
     private static final String WIFI_NOTIF = "harsh_wifi_notif";
     private static final String TW_SCROLL = "harsh_tw_scroll";
     private static final String QUICK_SCROLL = "harsh_quick_scroll";
+    private static final String STATUSBAR_TRANS = "harsh_statusbar_trans";
     private static final String FBDELAY = "/sys/module/fbearlysuspend/parameters/fbdelay";
     private static final String FBDELAY_MS = "/sys/module/fbearlysuspend/parameters/fbdelay_ms";
     private static final String LOGGER = "/data/logger";
@@ -90,6 +92,7 @@ public class MainActivity extends Activity {
                     onSharedPreferenceChanged(sharedPref,"tw_pg_toggle");
                     onSharedPreferenceChanged(sharedPref,"font");
                     onSharedPreferenceChanged(sharedPref,"quickpanel_scroll");
+                    onSharedPreferenceChanged(sharedPref,"statusbar_trans");
                     handleUserTile();
         }
 
@@ -113,6 +116,7 @@ public class MainActivity extends Activity {
 			if(key.equals("tw_pg_toggle")) handleTWScroll();
 			if(key.equals("font")) handleFont();
 			if(key.equals("quickpanel_scroll")) handleQuickPanelScroll();
+			if(key.equals("statusbar_trans")) handleStatusbarTransparancy();
 		}
 		
 		public void handleCRT() {
@@ -469,6 +473,19 @@ public class MainActivity extends Activity {
 	                return false;
 	            }
 	        });
+	    }
+	    
+	    public void handleStatusbarTransparancy() {
+	    	PreferenceScreen prefs = getPreferenceScreen();
+	        ListPreference mListPref = (ListPreference) prefs.findPreference("statusbar_trans");
+	        mListPref.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+				
+				@Override
+				public boolean onPreferenceChange(Preference preference, Object newValue) {
+					Settings.System.putInt(getActivity().getContentResolver(), STATUSBAR_TRANS, Integer.parseInt((String) newValue));
+					return true;
+				}
+			});
 	    }
 	    
 	    public void handleUserTile() {

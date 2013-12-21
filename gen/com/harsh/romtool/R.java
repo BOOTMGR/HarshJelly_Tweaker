@@ -13,6 +13,8 @@ public final class R {
         public static final int font_val=0x7f050001;
         public static final int longpress_delay_name=0x7f050002;
         public static final int longpress_delay_val=0x7f050003;
+        public static final int statusbar_trans_name=0x7f050004;
+        public static final int statusbar_trans_val=0x7f050005;
     }
     public static final class attr {
     }
@@ -98,6 +100,8 @@ public final class R {
         public static final int scroll_sum=0x7f070020;
         public static final int statusbar_scroll=0x7f07002e;
         public static final int statusbar_scroll_sum=0x7f07002f;
+        public static final int statusbar_transparancy=0x7f070038;
+        public static final int statusbar_transparancy_sum=0x7f070039;
         public static final int sysctl=0x7f07000e;
         public static final int tw_pg_rot=0x7f07002a;
         public static final int tw_pg_rot_sum=0x7f07002b;

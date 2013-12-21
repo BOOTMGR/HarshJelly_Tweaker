@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceScreen android:title="@string/basic">
+        <ListPreference android:title="@string/statusbar_transparancy" android:summary="@string/statusbar_transparancy_sum" android:key="statusbar_trans" android:entries="@array/statusbar_trans_name" android:entryValues="@array/statusbar_trans_val" />
         <CheckBoxPreference android:title="@string/crt_animation" android:key="crt_toggle" android:summary= "Old TV Effect while screen off"/>
         <CheckBoxPreference android:title="@string/killer" android:key="killer_toggle" android:summary="Kills foreground app on Long pressing back key"/>
         <CheckBoxPreference android:title="@string/ascend_ring" android:key="ascending_toggle" android:summary="Increasing Ringtone Volume"/>
