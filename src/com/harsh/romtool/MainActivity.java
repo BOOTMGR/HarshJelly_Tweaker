@@ -11,6 +11,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -52,6 +53,8 @@ public class MainActivity extends Activity {
     private static final String SYSCTL1 = "/system/etc";
     private static final String INITD = "/system/etc/init.d";
     private static final String FSYNC = "/sys/kernel/fsync/mode";
+    
+    private static ContentResolver cr;
 
 
     @Override
@@ -75,6 +78,7 @@ public class MainActivity extends Activity {
                     getPreferenceManager().setSharedPreferencesMode(MODE_WORLD_READABLE);
                     addPreferencesFromResource(R.xml.main);
                     SharedPreferences sharedPref = getPreferenceScreen().getSharedPreferences();
+                    cr = getActivity().getContentResolver();
                     onSharedPreferenceChanged(sharedPref,"crt_toggle");
                     onSharedPreferenceChanged(sharedPref,"killer_toggle");
                     onSharedPreferenceChanged(sharedPref,"vib_toggle");
@@ -122,18 +126,18 @@ public class MainActivity extends Activity {
 		public void handleCRT() {
 			final CheckBoxPreference crt_toggle = (CheckBoxPreference) findPreference("crt_toggle");
 	        final File f = new File(FBDELAY);
-	        int crt = Settings.System.getInt(getActivity().getContentResolver(),CRT_ANIM, 0);
+	        int crt = getInt(CRT_ANIM, 0);
 	        crt_toggle.setChecked(crt != 0);
 	        crt_toggle.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
 	                public boolean onPreferenceClick(Preference preference) {
 	                    if (crt_toggle.isChecked()) {
-	                        Settings.System.putInt(getActivity().getContentResolver(), CRT_ANIM, 1);
+	                        putInt(CRT_ANIM, 1);
 	                        Log.d("harsh_debug","harsh_crt=>1");
 	                        new SU().execute("echo 1 > "+FBDELAY,"echo 350 > "+FBDELAY_MS);
 	                        Utils.mountSystemRW();
 	                        Utils.copyAssets("03_crt",INITD,777,getActivity().getApplicationContext());
 	                    } else {
-	                        Settings.System.putInt(getActivity().getContentResolver(), CRT_ANIM, 0);
+	                    	putInt(CRT_ANIM, 0);
 	                        Log.d("harsh_debug","harsh_crt=>0");
 	                        new SU().execute("echo 0 > "+FBDELAY,"echo 0 > "+FBDELAY_MS);
 	                        Utils.mountSystemRW();
@@ -148,15 +152,15 @@ public class MainActivity extends Activity {
 		
 		public void handleKiller() {
 	        final CheckBoxPreference killer = (CheckBoxPreference) findPreference("killer_toggle");
-	        int Killer = Settings.System.getInt(getActivity().getContentResolver(),KILLER, 0);
+	        int Killer = getInt(KILLER, 1);
 	        killer.setChecked(Killer != 0);
 	        killer.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
 	            public boolean onPreferenceClick(Preference preference) {
 	                if (killer.isChecked()) {
-	                    Settings.System.putInt(getActivity().getContentResolver(), KILLER,1);
+	                	putInt(KILLER,1);
 	                    Log.d("harsh_debug","harsh_killer=>1");
 	                } else {
-	                    Settings.System.putInt(getActivity().getContentResolver(), KILLER,0);
+	                	putInt(KILLER,0);
 	                    Log.d("harsh_debug","harsh_killer=>0");
 	                }
 	                return false;
@@ -166,15 +170,15 @@ public class MainActivity extends Activity {
 		
 		public void handleAOSPVib() {
 	        final CheckBoxPreference aosp_vib = (CheckBoxPreference) findPreference("vib_toggle");
-	        int AOSP_VIB = Settings.System.getInt(getActivity().getContentResolver(),AOSP_VIBRATION, 0);
+	        int AOSP_VIB = getInt(AOSP_VIBRATION, 0);
 	        aosp_vib.setChecked(AOSP_VIB != 0);
 	        aosp_vib.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
 	            public boolean onPreferenceClick(Preference preference) {
 	                if (aosp_vib.isChecked()) {
-	                    Settings.System.putInt(getActivity().getContentResolver(), AOSP_VIBRATION,1);
+	                	putInt(AOSP_VIBRATION,1);
 	                    Log.d("harsh_debug","harsh_aosp_vib=>1");
 	                } else {
-	                    Settings.System.putInt(getActivity().getContentResolver(), AOSP_VIBRATION,0);
+	                	putInt(AOSP_VIBRATION,0);
 	                    Log.d("harsh_debug","harsh_aosp_vib=>0");
 	                }
 	                return false;
@@ -184,15 +188,15 @@ public class MainActivity extends Activity {
 		
 		public void handleAOSPOrient() {
 	        final CheckBoxPreference aosp_oriet = (CheckBoxPreference) findPreference("rot_toggle");
-	        int AOSP_ROT = Settings.System.getInt(getActivity().getContentResolver(),AOSP_ROTATION, 0);
+	        int AOSP_ROT = getInt(AOSP_ROTATION, 0);
 	        aosp_oriet.setChecked(AOSP_ROT != 0);
 	        aosp_oriet.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
 	            public boolean onPreferenceClick(Preference preference) {
 	                if (aosp_oriet.isChecked()) {
-	                    Settings.System.putInt(getActivity().getContentResolver(), AOSP_ROTATION,1);
+	                	putInt(AOSP_ROTATION,1);
 	                    Log.d("harsh_debug","harsh_aosp_orient=>1");
 	                } else {
-	                    Settings.System.putInt(getActivity().getContentResolver(), AOSP_ROTATION,0);
+	                	putInt(AOSP_ROTATION,0);
 	                    Log.d("harsh_debug","harsh_aosp_orient=>0");
 	                }
 	                return false;
@@ -202,16 +206,15 @@ public class MainActivity extends Activity {
 		
 		public void handleRinger() {
 	        final CheckBoxPreference ascend_ring = (CheckBoxPreference) findPreference("ascending_toggle");
-	        int ringer = Settings.System.getInt(getActivity().getContentResolver(),ASCEND_RING, 0);
+	        int ringer = getInt(ASCEND_RING, 0);
 	        ascend_ring.setChecked(ringer != 0);
 	        ascend_ring.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
 	            public boolean onPreferenceClick(Preference preference) {
 	                if (ascend_ring.isChecked()) {
-	                    Settings.System.putInt(getActivity()
-	                    		.getContentResolver(), ASCEND_RING,1);
+	                	putInt(ASCEND_RING,1);
 	                    Log.d("harsh_debug","harsh_ascend_ring=>1");
 	                } else {
-	                    Settings.System.putInt(getActivity().getContentResolver(), ASCEND_RING,0);
+	                	putInt(ASCEND_RING,0);
 	                    Log.d("harsh_debug","harsh_ascend_ring=>0");
 	                }
 	                return false;
@@ -273,16 +276,16 @@ public class MainActivity extends Activity {
 		
 		public void handleUnplug() {
 	        final CheckBoxPreference unplug_wake = (CheckBoxPreference) findPreference("unplug_wake");
-	        int uwake = Settings.System.getInt(getActivity().getContentResolver(),UNPLUG_WAKE, 0);
+	        int uwake = getInt(UNPLUG_WAKE, 0);
 	        unplug_wake.setChecked(uwake != 0);
 	        unplug_wake.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
 	            public boolean onPreferenceClick(Preference preference) {
 	                if (unplug_wake.isChecked()) {
-	                    Settings.System.putInt(getActivity().getContentResolver(), UNPLUG_WAKE,1);
+	                	putInt(UNPLUG_WAKE,1);
 	                    Log.d("harsh_debug","harsh_unplug=>1");
 	                    ShowToast("Reboot is Required");
 	                } else {
-	                    Settings.System.putInt(getActivity().getContentResolver(), UNPLUG_WAKE,0);
+	                	putInt(UNPLUG_WAKE,0);
 	                    Log.d("harsh_debug","harsh_unplug=>0");
 	                    ShowToast("Reboot is Required");
 	                }
@@ -293,16 +296,16 @@ public class MainActivity extends Activity {
 		
 		public void handleAllRotation() {
 	        final CheckBoxPreference all_rotate = (CheckBoxPreference) findPreference("allrot_toggle");
-	        int val = Settings.System.getInt(getActivity().getContentResolver(),ALL_ROTATE, 0);
+	        int val = getInt(ALL_ROTATE, 0);
 	        all_rotate.setChecked(val != 0);
 	        all_rotate.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
 	            public boolean onPreferenceClick(Preference preference) {
 	                if (all_rotate.isChecked()) {
-	                    Settings.System.putInt(getActivity().getContentResolver(), ALL_ROTATE,1);
+	                	putInt(ALL_ROTATE,1);
 	                    Log.d("harsh_debug","harsh_rotate=>1");
 	                    ShowToast("Reboot is Required");
 	                } else {
-	                    Settings.System.putInt(getActivity().getContentResolver(), ALL_ROTATE,0);
+	                	putInt(ALL_ROTATE,0);
 	                    Log.d("harsh_debug","harsh_rotate=>0");
 	                    ShowToast("Reboot is Required");
 	                }
@@ -313,16 +316,16 @@ public class MainActivity extends Activity {
 		
 		public void handleNavigation() {
 	        final CheckBoxPreference cb = (CheckBoxPreference) findPreference("nav_toggle");
-	        int val = Settings.System.getInt(getActivity().getContentResolver(),NAVIGATION, 0);
+	        int val = getInt(NAVIGATION, 0);
 	        cb.setChecked(val != 0);
 	        cb.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
 	            public boolean onPreferenceClick(Preference preference) {
 	                if (cb.isChecked()) {
-	                    Settings.System.putInt(getActivity().getContentResolver(), NAVIGATION,1);
+	                	putInt(NAVIGATION,1);
 	                    Log.d("harsh_debug","harsh_navigation=>1");
 	                    ShowToast("Reboot is Required");
 	                } else {
-	                    Settings.System.putInt(getActivity().getContentResolver(), NAVIGATION,0);
+	                	putInt(NAVIGATION,0);
 	                    Log.d("harsh_debug","harsh_navigation=>0");
 	                    ShowToast("Reboot is Required");
 	                }
@@ -333,16 +336,16 @@ public class MainActivity extends Activity {
 		
 		public void handleIME() {
 	        final CheckBoxPreference cb = (CheckBoxPreference) findPreference("ime_toggle");
-	        int val = Settings.System.getInt(getActivity().getContentResolver(),IME, 0);
+	        int val = getInt(IME, 0);
 	        cb.setChecked(val != 0);
 	        cb.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
 	            public boolean onPreferenceClick(Preference preference) {
 	                if (cb.isChecked()) {
-	                    Settings.System.putInt(getActivity().getContentResolver(), IME,1);
+	                	putInt(IME,1);
 	                    Log.d("harsh_debug","harsh_ime=>1");
 	                    ShowToast("Reboot is Required");
 	                } else {
-	                    Settings.System.putInt(getActivity().getContentResolver(), IME,0);
+	                	putInt(IME,0);
 	                    Log.d("harsh_debug","harsh_ime=>0");
 	                    ShowToast("Reboot is Required");
 	                }
@@ -381,15 +384,15 @@ public class MainActivity extends Activity {
 		
 		public void handleHeadsetWarning() {
 	        final CheckBoxPreference cb = (CheckBoxPreference) findPreference("hs_toggle");
-	        int val = Settings.System.getInt(getActivity().getContentResolver(),HEADSET, 0);
+	        int val = getInt(HEADSET, 1);
 	        cb.setChecked(val != 0);
 	        cb.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
 	            public boolean onPreferenceClick(Preference preference) {
 	                if (cb.isChecked()) {
-	                    Settings.System.putInt(getActivity().getContentResolver(), HEADSET,1);
+	                	putInt(HEADSET,1);
 	                    Log.d("harsh_debug","harsh_volume=>1");
 	                } else {
-	                    Settings.System.putInt(getActivity().getContentResolver(), HEADSET,0);
+	                	putInt(HEADSET,0);
 	                    showDialog("Warning...","Listening to Loud music for longer time can damage your ear and lead to hear loss.");
 	                    Log.d("harsh_debug","harsh_volume=>0");
 	                }
@@ -400,15 +403,15 @@ public class MainActivity extends Activity {
 		
 		public void handleWiFiNotification() {
 	        final CheckBoxPreference cb = (CheckBoxPreference) findPreference("wifi_notif_toggle");
-	        int val = Settings.System.getInt(getActivity().getContentResolver(),WIFI_NOTIF, 0);
+	        int val = getInt(WIFI_NOTIF, 0);
 	        cb.setChecked(val != 0);
 	        cb.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
 	            public boolean onPreferenceClick(Preference preference) {
 	                if (cb.isChecked()) {
-	                    Settings.System.putInt(getActivity().getContentResolver(), WIFI_NOTIF,1);
+	                	putInt(WIFI_NOTIF,1);
 	                    Log.d("harsh_debug","harsh_wifi_notif=>1");
 	                } else {
-	                    Settings.System.putInt(getActivity().getContentResolver(), WIFI_NOTIF,0);
+	                	putInt(WIFI_NOTIF,0);
 	                    Log.d("harsh_debug","harsh_wifi_notif=>0");
 	                }
 	                return false;
@@ -418,15 +421,15 @@ public class MainActivity extends Activity {
 		
 		public void handleTWScroll() {
 	        final CheckBoxPreference cb = (CheckBoxPreference) findPreference("tw_pg_toggle");
-	        int val = Settings.System.getInt(getActivity().getContentResolver(),TW_SCROLL, 0);
+	        int val = getInt(TW_SCROLL, 0);
 	        cb.setChecked(val != 0);
 	        cb.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
 	            public boolean onPreferenceClick(Preference preference) {
 	                if (cb.isChecked()) {
-	                    Settings.System.putInt(getActivity().getContentResolver(), TW_SCROLL,1);
+	                	putInt(TW_SCROLL,1);
 	                    Log.d("harsh_debug","harsh_tw_scroll=>1");
 	                } else {
-	                    Settings.System.putInt(getActivity().getContentResolver(), TW_SCROLL,0);
+	                	putInt(TW_SCROLL,0);
 	                    Log.d("harsh_debug","harsh_tw_scroll=>0");
 	                }
 	                return false;
@@ -458,15 +461,15 @@ public class MainActivity extends Activity {
 
 	    public void handleQuickPanelScroll() {
 	        final CheckBoxPreference cb = (CheckBoxPreference) findPreference("quickpanel_scroll");
-	        int val = Settings.System.getInt(getActivity().getContentResolver(),QUICK_SCROLL, 0);
+	        int val = getInt(QUICK_SCROLL, 0);
 	        cb.setChecked(val != 0);
 	        cb.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
 	            public boolean onPreferenceClick(Preference preference) {
 	                if (cb.isChecked()) {
-	                    Settings.System.putInt(getActivity().getContentResolver(), QUICK_SCROLL,1);
+	                	putInt(QUICK_SCROLL,1);
 	                    Log.d("harsh_debug","harsh_quick_scroll=>1");
 	                } else {
-	                    Settings.System.putInt(getActivity().getContentResolver(), QUICK_SCROLL,0);
+	                	putInt(QUICK_SCROLL,0);
 	                    ShowToast("Reboot is Required");
 	                    Log.d("harsh_debug","harsh_quick_scroll=>0");
 	                }
@@ -482,7 +485,7 @@ public class MainActivity extends Activity {
 				
 				@Override
 				public boolean onPreferenceChange(Preference preference, Object newValue) {
-					Settings.System.putInt(getActivity().getContentResolver(), STATUSBAR_TRANS, Integer.parseInt((String) newValue));
+					putInt(STATUSBAR_TRANS, Integer.parseInt((String) newValue));
 					return true;
 				}
 			});
@@ -530,6 +533,14 @@ public class MainActivity extends Activity {
 	        });
 	        AlertDialog dialog = builder.create();
 	        dialog.show();
+	    }
+	    
+	    public int getInt(String key, int defValue) {
+	    	return Settings.System.getInt(cr, key, defValue);
+	    }
+	    
+	    public void putInt(String key, int val) {
+	    	Settings.System.putInt(cr, key, val);
 	    }
 	}
     

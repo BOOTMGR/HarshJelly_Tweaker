@@ -6,10 +6,12 @@
 package com.harsh.romtool;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -21,8 +23,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 class Utils {
-// SU_wop : Executes shell command as superuser and return the output as a String
-// Usage  : Utils.SU_wop("command")
+	
     public static String SU_wop(String cmds) {
 //     FLAG:0x2
         String out = null;
@@ -54,8 +55,7 @@ class Utils {
         }
         return out.substring(0,out.length()-1);
     }
-// SU_retVal : Executes shell command as superuser and return the value of command executed.It'll return either 0 or 1
-// Usage  : Utils.SU_retVal("command")
+    
     public static int SU_retVal(String cmd) {
 //     FLAG:0x3
         Process process = null;
@@ -77,8 +77,7 @@ class Utils {
         }
         return process.exitValue();
     }
-// copyAssets : copies file in assets directory of apk to destination
-// Usage  : Utils.copyAssets(file1,/system/etc,777,this)
+    
     public static void copyAssets(String script,String path,int mode,Context context) {
         AssetManager assetManager = context.getAssets();
         InputStream in = null;
@@ -112,19 +111,16 @@ class Utils {
             out.write(buffer, 0, read);
         }
     }
-// mountSystemRW : Mount /system as R/W for Janice (only)
-// Usage  : Utils.mountSystemRW()
+    
     public static void mountSystemRW() {
         new SU().execute("mount -o remount,rw /dev/block/mmcblk0p3 /system");
     }
-// mSetFilePerm : Sets file permission for Linux FS
-// Usage  : Utils.mSetFilePerm("/system/build.prop",644)    
+    
     public static void mSetFilePerm(String path,int mode) {
 		new SU().execute("chmod "+mode+" "+path);
 	}
 }
-// SU : This Asynctask class Executes shell commands as Superuser in background
-// Usage  : new SU().execute("command1","command2", ... )
+
 	class SU extends AsyncTask<String, Void, Void> {
 	   @Override
 	   protected Void doInBackground(String... cmds) {
