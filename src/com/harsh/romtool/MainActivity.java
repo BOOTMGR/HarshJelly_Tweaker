@@ -146,8 +146,12 @@ public class MainActivity extends Activity {
 	                    return false;
 	                }
 	        });
-	        if(!f.exists())
+	        if(!f.exists()) {
 	            crt_toggle.setSummary("Unsupported kernel");
+	            crt_toggle.setEnabled(false);
+				Log.d("harsh_debug","CRT Animation not supported due to unsupported Kernel");
+				putInt(CRT_ANIM, 0);
+	        }
 		}
 		
 		public void handleKiller() {
