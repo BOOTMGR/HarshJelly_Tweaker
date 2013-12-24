@@ -18,6 +18,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
+import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
@@ -47,6 +48,7 @@ public class MainActivity extends Activity {
     private static final String TW_SCROLL = "harsh_tw_scroll";
     private static final String QUICK_SCROLL = "harsh_quick_scroll";
     private static final String STATUSBAR_TRANS = "harsh_statusbar_trans";
+    private static final String USERNAME = "user_name";
     private static final String FBDELAY = "/sys/module/fbearlysuspend/parameters/fbdelay";
     private static final String FBDELAY_MS = "/sys/module/fbearlysuspend/parameters/fbdelay_ms";
     private static final String LOGGER = "/data/logger";
@@ -97,6 +99,7 @@ public class MainActivity extends Activity {
                     onSharedPreferenceChanged(sharedPref,"font");
                     onSharedPreferenceChanged(sharedPref,"quickpanel_scroll");
                     onSharedPreferenceChanged(sharedPref,"statusbar_trans");
+                    onSharedPreferenceChanged(sharedPref,"user_name");
                     handleUserTile();
         }
 
@@ -121,6 +124,7 @@ public class MainActivity extends Activity {
 			if(key.equals("font")) handleFont();
 			if(key.equals("quickpanel_scroll")) handleQuickPanelScroll();
 			if(key.equals("statusbar_trans")) handleStatusbarTransparancy();
+			if(key.equals("user_name")) updateUserName();
 		}
 		
 		public void handleCRT() {
@@ -504,6 +508,17 @@ public class MainActivity extends Activity {
 					return false;
 				}
 			});
+	    }
+	    
+	    public void updateUserName() {
+	    	PreferenceScreen prefs = getPreferenceScreen();
+	    	EditTextPreference mETPref = (EditTextPreference) prefs.findPreference("user_name");
+	    	mETPref.setOnPreferenceChangeListener(new OnPreferenceChangeListener(){
+	    	    public boolean onPreferenceChange(Preference preference, Object newValue) {
+	    	    	Settings.System.putString(cr, USERNAME, (String) newValue);
+	    	        return true;
+	    	    }
+	    	});
 	    }
 	    
 	    public void showDialog(String title, String msg) {

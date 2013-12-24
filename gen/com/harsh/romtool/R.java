@@ -98,6 +98,7 @@ public final class R {
         public static final int rom=0x7f070007;
         public static final int scroll=0x7f07001f;
         public static final int scroll_sum=0x7f070020;
+        public static final int statusbar_header=0x7f07003c;
         public static final int statusbar_scroll=0x7f07002e;
         public static final int statusbar_scroll_sum=0x7f07002f;
         public static final int statusbar_transparancy=0x7f070038;
@@ -107,6 +108,8 @@ public final class R {
         public static final int tw_pg_rot_sum=0x7f07002b;
         public static final int tw_title=0x7f070029;
         public static final int unplug=0x7f070012;
+        public static final int username=0x7f07003a;
+        public static final int username_sum=0x7f07003b;
         public static final int usertile=0x7f070036;
         public static final int usertile_sum=0x7f070037;
         public static final int warning=0x7f070013;

@@ -59,4 +59,7 @@
     <string name="usertile_sum">UserTile icon displayed on 4.2 statusbar</string>
     <string name="statusbar_transparancy">Statusbar Transparancy</string>
     <string name="statusbar_transparancy_sum">Choose transparancy level for statusbar</string>
+    <string name="username">User Name</string>
+    <string name="username_sum">Name to be displayed on contacts tile in statusbar</string>
+    <string name="statusbar_header">Statusbar Tweaks</string>
 </resources>
