@@ -58,7 +58,6 @@ public class MainActivity extends Activity {
     private static final String LOGGER = "/data/logger";
     private static final String SYSCTL1 = "/system/etc";
     private static final String INITD = "/system/etc/init.d";
-    private static final String FSYNC = "/sys/kernel/fsync/mode";
     
     private static ContentResolver cr;
 
@@ -96,7 +95,6 @@ public class MainActivity extends Activity {
                     onSharedPreferenceChanged(sharedPref,"allrot_toggle");
                     onSharedPreferenceChanged(sharedPref,"nav_toggle");
                     onSharedPreferenceChanged(sharedPref,"ime_toggle");
-                    onSharedPreferenceChanged(sharedPref,"fsync_toggle");
                     onSharedPreferenceChanged(sharedPref,"hs_toggle");
                     onSharedPreferenceChanged(sharedPref,"wifi_notif_toggle");
                     onSharedPreferenceChanged(sharedPref,"tw_pg_toggle");
@@ -121,7 +119,6 @@ public class MainActivity extends Activity {
 			if(key.equals("allrot_toggle")) handleAllRotation();
 			if(key.equals("nav_toggle")) handleNavigation();
 			if(key.equals("ime_toggle")) handleIME();
-			if(key.equals("fsync_toggle")) handleFSYNC();
 			if(key.equals("hs_toggle")) handleHeadsetWarning();
 			if(key.equals("wifi_notif_toggle")) handleWiFiNotification();
 			if(key.equals("tw_pg_toggle")) handleTWScroll();
@@ -364,34 +361,6 @@ public class MainActivity extends Activity {
 	                return false;
 	            }
 	        });
-	    }
-		
-		public void handleFSYNC() {
-	        final CheckBoxPreference cb = (CheckBoxPreference) findPreference("fsync_toggle");
-	        final File f = new File(FSYNC);
-	        if(f.exists()) {
-	            String out = Utils.SU_wop("head -1 /sys/kernel/fsync/mode");
-	            int val = Integer.parseInt(Character.toString(out.charAt(0)));
-	            cb.setChecked(val != 0);
-	            cb.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
-	                public boolean onPreferenceClick(Preference preference) {
-	                    if (cb.isChecked()) {
-	                        new SU().execute("echo 1 > "+FSYNC);
-	                        Utils.mountSystemRW();
-	                        Utils.copyAssets("02_fsync",INITD,777,getActivity().getApplicationContext());
-	                        Log.d("harsh_debug", "fsync=>1");
-	                    } else {
-	                        new SU().execute("echo 0 > "+FSYNC,"rm /system/etc/init.d/02_fsync");
-	                        Log.d("harsh_debug", "fsync=>0");
-	                    }
-	                    return false;
-	                }
-	            });
-	        }else{
-	            cb.setEnabled(false);
-	            cb.setSummary("Unsupported kernel");
-	            Log.e("harsh_debug","FSYNC:Unsupported Kernel");
-	        }
 	    }
 		
 		public void handleHeadsetWarning() {
