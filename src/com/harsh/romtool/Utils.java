@@ -8,22 +8,20 @@
 
 package com.harsh.romtool;
 
-import android.app.Activity;
-import android.content.ContentResolver;
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.AsyncTask;
-import android.os.Environment;
-import android.provider.Settings;
-import android.util.Log;
-import android.widget.Toast;
-
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+
+import android.app.Activity;
+import android.content.Context;
+import android.content.res.AssetManager;
+import android.os.AsyncTask;
+import android.os.Environment;
+import android.util.Log;
+import android.widget.Toast;
 
 class Utils {
 	
@@ -37,6 +35,7 @@ class Utils {
             os.writeBytes(cmds+"\n");
             os.writeBytes("exit\n");
             os.flush();
+            p.waitFor();
             InputStream stdout = p.getInputStream();
             byte[] buffer = new byte[4096];
             int read;

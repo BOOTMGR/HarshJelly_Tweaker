@@ -15,6 +15,7 @@
         <ListPreference android:title="@string/statusbar_transparancy" android:summary="@string/statusbar_transparancy_sum" android:key="statusbar_trans" android:entries="@array/statusbar_trans_name" android:entryValues="@array/statusbar_trans_val" /> 
         <EditTextPreference android:title="@string/username" android:summary="@string/username_sum" android:key="user_name"/>
         <CheckBoxPreference android:title="@string/statusbar_scroll" android:key="quickpanel_scroll" android:summary="@string/statusbar_scroll_sum"/>
+        <CheckBoxPreference android:title="@string/follow_statubar_trans" android:key="follow_statusbar" android:summary="@string/follow_statubar_trans_sum"/>
     </PreferenceScreen>
     <PreferenceScreen android:title="@string/lock">
         <CheckBoxPreference android:title="@string/aosp_vib" android:key="vib_toggle" android:summary="Haptic feedback in AOSP Lockscreen"/>

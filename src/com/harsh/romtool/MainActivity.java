@@ -52,6 +52,7 @@ public class MainActivity extends Activity {
     private static final String TW_SCROLL = "harsh_tw_scroll";
     private static final String QUICK_SCROLL = "harsh_quick_scroll";
     private static final String STATUSBAR_TRANS = "harsh_statusbar_trans";
+    private static final String FOLLOW_STATUSBAR_TRANS = "harsh_lockscreen_follow_statusbar";
     private static final String USERNAME = "user_name";
     private static final String FBDELAY = "/sys/module/fbearlysuspend/parameters/fbdelay";
     private static final String FBDELAY_MS = "/sys/module/fbearlysuspend/parameters/fbdelay_ms";
@@ -102,6 +103,7 @@ public class MainActivity extends Activity {
                     onSharedPreferenceChanged(sharedPref,"quickpanel_scroll");
                     onSharedPreferenceChanged(sharedPref,"statusbar_trans");
                     onSharedPreferenceChanged(sharedPref,"user_name");
+                    onSharedPreferenceChanged(sharedPref,"follow_statusbar");
                     handleUserTile();
         }
 
@@ -126,6 +128,7 @@ public class MainActivity extends Activity {
 			if(key.equals("quickpanel_scroll")) handleQuickPanelScroll();
 			if(key.equals("statusbar_trans")) handleStatusbarTransparancy();
 			if(key.equals("user_name")) updateUserName();
+			if(key.equals("follow_statusbar")) handleLockScreenTrans();
 		}
 		
 		public void handleCRT() {
@@ -453,6 +456,26 @@ public class MainActivity extends Activity {
 	                	putInt(QUICK_SCROLL,0);
 	                    ShowToast("Reboot is Required");
 	                    Log.d("harsh_debug","harsh_quick_scroll=>0");
+	                }
+	                return false;
+	            }
+	        });
+	    }
+	    
+	    public void handleLockScreenTrans() {
+	        final CheckBoxPreference cb = (CheckBoxPreference) findPreference("follow_statusbar");
+	        int val = getInt(FOLLOW_STATUSBAR_TRANS, 0);
+	        cb.setChecked(val != 0);
+	        cb.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
+	            public boolean onPreferenceClick(Preference preference) {
+	                if (cb.isChecked()) {
+	                	putInt(FOLLOW_STATUSBAR_TRANS,1);
+	                	ShowToast("Reboot is Required");
+	                    Log.d("harsh_debug","harsh_lockscreen_follow_statusbar=>1");
+	                } else {
+	                	putInt(FOLLOW_STATUSBAR_TRANS,0);
+	                    ShowToast("Reboot is Required");
+	                    Log.d("harsh_debug","harsh_lockscreen_follow_statusbar=>0");
 	                }
 	                return false;
 	            }

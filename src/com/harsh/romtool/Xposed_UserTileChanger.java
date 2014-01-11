@@ -21,7 +21,7 @@ public class Xposed_UserTileChanger implements IXposedHookInitPackageResources {
 	public void handleInitPackageResources(InitPackageResourcesParam resparam)
 			throws Throwable {
 		File HarshJellyResPath = new File("/data/HarshJelly");
-		boolean ret = HarshJellyResPath.mkdir();
+		HarshJellyResPath.mkdir();
 		Runtime.getRuntime().exec("chmod 777 /data/HarshJelly");
 		if (!resparam.packageName.equals("com.android.systemui"))
 			return;

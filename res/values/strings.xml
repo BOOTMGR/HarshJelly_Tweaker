@@ -60,4 +60,6 @@
     <string name="username">User Name</string>
     <string name="username_sum">Name to be displayed on contacts tile in statusbar</string>
     <string name="statusbar_header">Statusbar Tweaks</string>
+    <string name="follow_statubar_trans">Follow statusbar Transparancy in Lockscreen</string>
+    <string name="follow_statubar_trans_sum">Enable this if you\'re using transparent Statusbar</string>
 </resources>

@@ -68,6 +68,8 @@ public final class R {
         public static final int clear_defaults=0x7f070032;
         public static final int clear_defaults_sum=0x7f070033;
         public static final int crt_animation=0x7f070001;
+        public static final int follow_statubar_trans=0x7f07003b;
+        public static final int follow_statubar_trans_sum=0x7f07003c;
         public static final int font=0x7f07002a;
         public static final int font_sum=0x7f07002b;
         public static final int harsh_panchal_mr_harsh_xda_develoers_com_=0x7f07000b;
