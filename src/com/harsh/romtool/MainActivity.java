@@ -52,6 +52,7 @@ public class MainActivity extends Activity {
     private static final String TW_SCROLL = "harsh_tw_scroll";
     private static final String QUICK_SCROLL = "harsh_quick_scroll";
     private static final String STATUSBAR_TRANS = "harsh_statusbar_trans";
+    private static final String BLUR_LOCKSCREEN = "harsh_lockscreen_blur";
     private static final String FOLLOW_STATUSBAR_TRANS = "harsh_lockscreen_follow_statusbar";
     private static final String USERNAME = "user_name";
     private static final String FBDELAY = "/sys/module/fbearlysuspend/parameters/fbdelay";
@@ -104,6 +105,8 @@ public class MainActivity extends Activity {
                     onSharedPreferenceChanged(sharedPref,"statusbar_trans");
                     onSharedPreferenceChanged(sharedPref,"user_name");
                     onSharedPreferenceChanged(sharedPref,"follow_statusbar");
+                    onSharedPreferenceChanged(sharedPref,"blur_lockscreen");
+                    onSharedPreferenceChanged(sharedPref,"blur_lockscreen_multi");
                     handleUserTile();
         }
 
@@ -129,6 +132,8 @@ public class MainActivity extends Activity {
 			if(key.equals("statusbar_trans")) handleStatusbarTransparancy();
 			if(key.equals("user_name")) updateUserName();
 			if(key.equals("follow_statusbar")) handleLockScreenTrans();
+			if(key.equals("blur_lockscreen")) handleLockScreenBlur();
+			if(key.equals("blur_lockscreen_multi")) handleLockScreenBlurMulti();
 		}
 		
 		public void handleCRT() {
@@ -493,6 +498,46 @@ public class MainActivity extends Activity {
 					return true;
 				}
 			});
+	    }
+	    
+	    public void handleLockScreenBlur() {
+	        final CheckBoxPreference cb = (CheckBoxPreference) findPreference("blur_lockscreen");
+	        final CheckBoxPreference cb2 = (CheckBoxPreference) findPreference("blur_lockscreen_multi");
+	        int i = getInt(BLUR_LOCKSCREEN, 0);
+	        cb.setChecked(i != 0);
+	        cb.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
+	            public boolean onPreferenceClick(Preference preference) {
+	                if (cb.isChecked()) {
+	                	putInt(BLUR_LOCKSCREEN,1);
+	                	putInt(FOLLOW_STATUSBAR_TRANS, 1);
+	                	cb2.setEnabled(true);
+	                    Log.d("harsh_debug", BLUR_LOCKSCREEN + "=>1");
+	                } else {
+	                	putInt(BLUR_LOCKSCREEN,0);
+	                	cb2.setEnabled(false);
+	                    Log.d("harsh_debug", BLUR_LOCKSCREEN + "=>0");
+	                }
+	                return false;
+	            }
+	        });
+	    }
+	    
+	    public void handleLockScreenBlurMulti() {
+	        final CheckBoxPreference cb = (CheckBoxPreference) findPreference("blur_lockscreen_multi");
+	        int i = getInt(BLUR_LOCKSCREEN, 0);
+	        cb.setChecked( i == 2 ? true : false);
+	        cb.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
+	            public boolean onPreferenceClick(Preference preference) {
+	                if (cb.isChecked()) {
+	                	putInt(BLUR_LOCKSCREEN,2);
+	                    Log.d("harsh_debug", BLUR_LOCKSCREEN + "=>2");
+	                } else {
+	                	putInt(BLUR_LOCKSCREEN,1);
+	                    Log.d("harsh_debug", BLUR_LOCKSCREEN + "=>1");
+	                }
+	                return false;
+	            }
+	        });
 	    }
 	    
 	    public void handleUserTile() {

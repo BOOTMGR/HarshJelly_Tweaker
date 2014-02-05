@@ -64,6 +64,10 @@ public final class R {
         public static final int ascend_ring=0x7f070005;
         public static final int author=0x7f07000c;
         public static final int basic=0x7f07000f;
+        public static final int blur_lock=0x7f07003d;
+        public static final int blur_lock_multi=0x7f07003f;
+        public static final int blur_lock_multi_sum=0x7f070040;
+        public static final int blur_lock_sum=0x7f07003e;
         public static final int cancel=0x7f070016;
         public static final int clear_defaults=0x7f070032;
         public static final int clear_defaults_sum=0x7f070033;
