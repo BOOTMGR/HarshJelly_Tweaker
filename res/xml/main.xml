@@ -12,6 +12,7 @@
         <CheckBoxPreference android:title="@string/wifi_notif" android:key="wifi_notif_toggle" android:summary="@string/wifi_notif_sum"/>
     </PreferenceScreen>
     <PreferenceScreen android:title="@string/statusbar_header">
+        <CheckBoxPreference android:title="@string/double_tap_sleep" android:key="double_tap_sleep" android:summary="@string/double_tap_sleep_sum"/>
         <ListPreference android:title="@string/statusbar_transparancy" android:summary="@string/statusbar_transparancy_sum" android:key="statusbar_trans" android:entries="@array/statusbar_trans_name" android:entryValues="@array/statusbar_trans_val" /> 
         <EditTextPreference android:title="@string/username" android:summary="@string/username_sum" android:key="user_name"/>
         <CheckBoxPreference android:title="@string/statusbar_scroll" android:key="quickpanel_scroll" android:summary="@string/statusbar_scroll_sum"/>

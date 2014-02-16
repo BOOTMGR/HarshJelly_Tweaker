@@ -54,6 +54,7 @@ public class MainActivity extends Activity {
     private static final String STATUSBAR_TRANS = "harsh_statusbar_trans";
     private static final String BLUR_LOCKSCREEN = "harsh_lockscreen_blur";
     private static final String FOLLOW_STATUSBAR_TRANS = "harsh_lockscreen_follow_statusbar";
+    private static final String DOUBLE_TAP_SLEEP = "harsh_double_tap_sleep";
     private static final String USERNAME = "user_name";
     private static final String FBDELAY = "/sys/module/fbearlysuspend/parameters/fbdelay";
     private static final String FBDELAY_MS = "/sys/module/fbearlysuspend/parameters/fbdelay_ms";
@@ -107,6 +108,7 @@ public class MainActivity extends Activity {
                     onSharedPreferenceChanged(sharedPref,"follow_statusbar");
                     onSharedPreferenceChanged(sharedPref,"blur_lockscreen");
                     onSharedPreferenceChanged(sharedPref,"blur_lockscreen_multi");
+                    onSharedPreferenceChanged(sharedPref,"double_tap_sleep");
                     handleUserTile();
         }
 
@@ -134,6 +136,7 @@ public class MainActivity extends Activity {
 			if(key.equals("follow_statusbar")) handleLockScreenTrans();
 			if(key.equals("blur_lockscreen")) handleLockScreenBlur();
 			if(key.equals("blur_lockscreen_multi")) handleLockScreenBlurMulti();
+			if(key.equals("double_tap_sleep")) handleDoubleTapSleep();
 		}
 		
 		public void handleCRT() {
@@ -534,6 +537,24 @@ public class MainActivity extends Activity {
 	                } else {
 	                	putInt(BLUR_LOCKSCREEN,1);
 	                    Log.d("harsh_debug", BLUR_LOCKSCREEN + "=>1");
+	                }
+	                return false;
+	            }
+	        });
+	    }
+	    
+	    public void handleDoubleTapSleep() {
+	        final CheckBoxPreference cb = (CheckBoxPreference) findPreference("double_tap_sleep");
+	        int val = getInt(DOUBLE_TAP_SLEEP, 0);
+	        cb.setChecked(val != 0);
+	        cb.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
+	            public boolean onPreferenceClick(Preference preference) {
+	                if (cb.isChecked()) {
+	                	putInt(DOUBLE_TAP_SLEEP, 1);
+	                    Log.d("harsh_debug", DOUBLE_TAP_SLEEP + "=>1");
+	                } else {
+	                	putInt(DOUBLE_TAP_SLEEP, 0);
+	                    Log.d("harsh_debug", DOUBLE_TAP_SLEEP + "=>0");
 	                }
 	                return false;
 	            }
