@@ -16,6 +16,7 @@ import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -63,11 +64,13 @@ public class MainActivity extends Activity {
     private static final String INITD = "/system/etc/init.d";
     
     private static ContentResolver cr;
+    private static Context mContext;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mContext = getApplicationContext();
         FragmentManager mFragmentManager = getFragmentManager();
         FragmentTransaction mFragmentTransaction = mFragmentManager
                                 .beginTransaction();
@@ -134,7 +137,7 @@ public class MainActivity extends Activity {
 			if(key.equals("statusbar_trans")) handleStatusbarTransparancy();
 			if(key.equals("user_name")) updateUserName();
 			if(key.equals("follow_statusbar")) handleLockScreenTrans();
-			if(key.equals("blur_lockscreen")) handleLockScreenBlur();
+			if(key.equals("blur_lockscreen")) handleLockScreenBlur(mContext);
 			if(key.equals("blur_lockscreen_multi")) handleLockScreenBlurMulti();
 			if(key.equals("double_tap_sleep")) handleDoubleTapSleep();
 		}
@@ -503,7 +506,7 @@ public class MainActivity extends Activity {
 			});
 	    }
 	    
-	    public void handleLockScreenBlur() {
+	    public void handleLockScreenBlur(final Context context) {
 	        final CheckBoxPreference cb = (CheckBoxPreference) findPreference("blur_lockscreen");
 	        final CheckBoxPreference cb2 = (CheckBoxPreference) findPreference("blur_lockscreen_multi");
 	        int i = getInt(BLUR_LOCKSCREEN, 0);
@@ -513,6 +516,9 @@ public class MainActivity extends Activity {
 	                if (cb.isChecked()) {
 	                	putInt(BLUR_LOCKSCREEN,1);
 	                	putInt(FOLLOW_STATUSBAR_TRANS, 1);
+	                	File f = new File("/data/data/com.sec.android.gallery3d/lockscreen_wallpaper.png");
+	                	if(!f.exists())
+	                		Utils.copyAssets("lockscreen_wallpaper.png", "/data/data/com.sec.android.gallery3d", 777, context);
 	                	cb2.setEnabled(true);
 	                    Log.d("harsh_debug", BLUR_LOCKSCREEN + "=>1");
 	                } else {
