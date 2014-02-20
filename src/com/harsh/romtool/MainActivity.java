@@ -517,8 +517,11 @@ public class MainActivity extends Activity {
 	                	putInt(BLUR_LOCKSCREEN,1);
 	                	putInt(FOLLOW_STATUSBAR_TRANS, 1);
 	                	File f = new File("/data/data/com.sec.android.gallery3d/lockscreen_wallpaper.png");
-	                	if(!f.exists())
+	                	if(!f.exists()) {
 	                		Utils.copyAssets("lockscreen_wallpaper.png", "/data/data/com.sec.android.gallery3d", 777, context);
+	                		Settings.System.putString(cr, "lockscreen_wallpaper_path", "/data/data/com.sec.android.gallery3d/lockscreen_wallpaper.jpg");
+	                		Settings.System.putInt(cr, "lockscreen_wallpaper", 1);
+	                	}
 	                	cb2.setEnabled(true);
 	                    Log.d("harsh_debug", BLUR_LOCKSCREEN + "=>1");
 	                } else {
