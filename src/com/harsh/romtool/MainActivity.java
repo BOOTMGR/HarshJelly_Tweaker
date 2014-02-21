@@ -11,6 +11,7 @@ package com.harsh.romtool;
 
 import java.io.File;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.FragmentManager;
@@ -506,7 +507,8 @@ public class MainActivity extends Activity {
 			});
 	    }
 	    
-	    public void handleLockScreenBlur(final Context context) {
+	    @SuppressLint("SdCardPath")
+		public void handleLockScreenBlur(final Context context) {
 	        final CheckBoxPreference cb = (CheckBoxPreference) findPreference("blur_lockscreen");
 	        final CheckBoxPreference cb2 = (CheckBoxPreference) findPreference("blur_lockscreen_multi");
 	        int i = getInt(BLUR_LOCKSCREEN, 0);
@@ -517,8 +519,10 @@ public class MainActivity extends Activity {
 	                	putInt(BLUR_LOCKSCREEN,1);
 	                	putInt(FOLLOW_STATUSBAR_TRANS, 1);
 	                	File f = new File("/data/data/com.sec.android.gallery3d/lockscreen_wallpaper.png");
-	                	if(!f.exists()) {
+	                	File f2 = new File("/data/data/com.sec.android.gallery3d/lockscreen_wallpaper.jpg");
+	                	if(!f.exists() || !f2.exists()) {
 	                		Utils.copyAssets("lockscreen_wallpaper.png", "/data/data/com.sec.android.gallery3d", 777, context);
+	                		new SU().execute("cp /data/data/com.sec.android.gallery3d/lockscreen_wallpaper.png /data/data/com.sec.android.gallery3d/lockscreen_wallpaper.jpg");
 	                		Settings.System.putString(cr, "lockscreen_wallpaper_path", "/data/data/com.sec.android.gallery3d/lockscreen_wallpaper.jpg");
 	                		Settings.System.putInt(cr, "lockscreen_wallpaper", 1);
 	                	}
@@ -581,7 +585,7 @@ public class MainActivity extends Activity {
 			});
 	    }
 	    
-	    public void updateUserName() {
+		public void updateUserName() {
 	    	PreferenceScreen prefs = getPreferenceScreen();
 	    	EditTextPreference mETPref = (EditTextPreference) prefs.findPreference("user_name");
 	    	mETPref.setOnPreferenceChangeListener(new OnPreferenceChangeListener(){
