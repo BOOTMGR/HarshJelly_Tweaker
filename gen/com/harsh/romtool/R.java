@@ -65,15 +65,13 @@ public final class R {
         public static final int author=0x7f07000c;
         public static final int basic=0x7f07000f;
         public static final int blur_lock=0x7f07003d;
-        public static final int blur_lock_multi=0x7f07003f;
-        public static final int blur_lock_multi_sum=0x7f070040;
         public static final int blur_lock_sum=0x7f07003e;
         public static final int cancel=0x7f070016;
         public static final int clear_defaults=0x7f070032;
         public static final int clear_defaults_sum=0x7f070033;
         public static final int crt_animation=0x7f070001;
-        public static final int double_tap_sleep=0x7f070041;
-        public static final int double_tap_sleep_sum=0x7f070042;
+        public static final int double_tap_sleep=0x7f07003f;
+        public static final int double_tap_sleep_sum=0x7f070040;
         public static final int follow_statubar_trans=0x7f07003b;
         public static final int follow_statubar_trans_sum=0x7f07003c;
         public static final int font=0x7f07002a;

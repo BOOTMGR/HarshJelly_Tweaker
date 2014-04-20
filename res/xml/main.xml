@@ -20,7 +20,6 @@
     </PreferenceScreen>
     <PreferenceScreen android:title="@string/lock">
         <CheckBoxPreference android:title="@string/blur_lock" android:key="blur_lockscreen" android:summary="@string/blur_lock_sum"/>
-        <CheckBoxPreference android:title="@string/blur_lock_multi" android:key="blur_lockscreen_multi" android:summary="@string/blur_lock_multi_sum"/>
         <CheckBoxPreference android:title="@string/aosp_vib" android:key="vib_toggle" android:summary="Haptic feedback in AOSP Lockscreen"/>
         <CheckBoxPreference android:title="@string/aosp_oriet" android:key="rot_toggle" android:summary="Allows rotation in Lockscreen"/>
     </PreferenceScreen>

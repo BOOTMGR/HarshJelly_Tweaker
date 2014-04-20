@@ -64,8 +64,6 @@
     <string name="follow_statubar_trans_sum">Enable this if you\'re using transparent Statusbar</string>
     <string name="blur_lock">Blur Effect</string>
     <string name="blur_lock_sum">Show blurred image of background activity on Lockscreen</string>
-    <string name="blur_lock_multi">Multi Threading for Blur Effect</string>
-    <string name="blur_lock_multi_sum">To fix delay in lock when blur effect is enabled</string>
     <string name="double_tap_sleep">Double tap to Sleep</string>
     <string name="double_tap_sleep_sum">Sleep device on double tapping statusbar</string>
 </resources>

@@ -111,7 +111,6 @@ public class MainActivity extends Activity {
                     onSharedPreferenceChanged(sharedPref,"user_name");
                     onSharedPreferenceChanged(sharedPref,"follow_statusbar");
                     onSharedPreferenceChanged(sharedPref,"blur_lockscreen");
-                    onSharedPreferenceChanged(sharedPref,"blur_lockscreen_multi");
                     onSharedPreferenceChanged(sharedPref,"double_tap_sleep");
                     handleUserTile();
         }
@@ -139,7 +138,6 @@ public class MainActivity extends Activity {
 			if(key.equals("user_name")) updateUserName();
 			if(key.equals("follow_statusbar")) handleLockScreenTrans();
 			if(key.equals("blur_lockscreen")) handleLockScreenBlur(mContext);
-			if(key.equals("blur_lockscreen_multi")) handleLockScreenBlurMulti();
 			if(key.equals("double_tap_sleep")) handleDoubleTapSleep();
 		}
 		
@@ -510,7 +508,6 @@ public class MainActivity extends Activity {
 	    @SuppressLint("SdCardPath")
 		public void handleLockScreenBlur(final Context context) {
 	        final CheckBoxPreference cb = (CheckBoxPreference) findPreference("blur_lockscreen");
-	        final CheckBoxPreference cb2 = (CheckBoxPreference) findPreference("blur_lockscreen_multi");
 	        int i = getInt(BLUR_LOCKSCREEN, 0);
 	        cb.setChecked(i != 0);
 	        cb.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
@@ -526,30 +523,10 @@ public class MainActivity extends Activity {
 	                		Settings.System.putString(cr, "lockscreen_wallpaper_path", "/data/data/com.sec.android.gallery3d/lockscreen_wallpaper.jpg");
 	                		Settings.System.putInt(cr, "lockscreen_wallpaper", 1);
 	                	}
-	                	cb2.setEnabled(true);
 	                    Log.d("harsh_debug", BLUR_LOCKSCREEN + "=>1");
 	                } else {
 	                	putInt(BLUR_LOCKSCREEN,0);
-	                	cb2.setEnabled(false);
 	                    Log.d("harsh_debug", BLUR_LOCKSCREEN + "=>0");
-	                }
-	                return false;
-	            }
-	        });
-	    }
-	    
-	    public void handleLockScreenBlurMulti() {
-	        final CheckBoxPreference cb = (CheckBoxPreference) findPreference("blur_lockscreen_multi");
-	        int i = getInt(BLUR_LOCKSCREEN, 0);
-	        cb.setChecked( i == 2 ? true : false);
-	        cb.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
-	            public boolean onPreferenceClick(Preference preference) {
-	                if (cb.isChecked()) {
-	                	putInt(BLUR_LOCKSCREEN,2);
-	                    Log.d("harsh_debug", BLUR_LOCKSCREEN + "=>2");
-	                } else {
-	                	putInt(BLUR_LOCKSCREEN,1);
-	                    Log.d("harsh_debug", BLUR_LOCKSCREEN + "=>1");
 	                }
 	                return false;
 	            }
